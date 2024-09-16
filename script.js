@@ -1,13 +1,12 @@
-// Función para generar un menú semanal basado en calorías, restricciones y número de comidas
-function generarMenuSemanal(caloriasDiarias, restriccionesUsuario, comidasPorDia) {
-    let menuSemanal = "<h3>Menú Semanal:</h3><ul>";
+// Función para mostrar opciones de menú diario y permitir la selección de cada comida
+function mostrarOpcionesDeComida(caloriasDiarias, restriccionesUsuario, comidasPorDia) {
+    const caloriasPorComida = caloriasDiarias / comidasPorDia;
     const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+    let opcionesComidas = "";
 
-    // Generar un menú diferente para cada día
+    // Generar opciones para cada día
     diasSemana.forEach(dia => {
-        menuSemanal += `<h4>${dia}:</h4>`;
-        let caloriasPorComida = caloriasDiarias / comidasPorDia;
-        let comidasDia = [];
+        opcionesComidas += `<h4>${dia}:</h4>`;
 
         for (let i = 0; i < comidasPorDia; i++) {
             const recetasFiltradas = recetas.filter(receta => {
@@ -17,34 +16,37 @@ function generarMenuSemanal(caloriasDiarias, restriccionesUsuario, comidasPorDia
                 return receta.calorias <= caloriasPorComida && cumpleRestricciones;
             });
 
-            if (recetasFiltradas.length > 0) {
-                const recetaSeleccionada = recetasFiltradas[Math.floor(Math.random() * recetasFiltradas.length)];
-                comidasDia.push(recetaSeleccionada);
-            } else {
-                comidasDia.push({
-                    nombre: "No hay recetas disponibles para esta comida.",
-                    descripcion: "Por favor ajusta tus restricciones alimentarias o cantidad de calorías.",
-                    calorias: 0,
-                    proteinas: 0,
-                    carbohidratos: 0,
-                    grasas: 0
-                });
-            }
-        }
+            opcionesComidas += `<label>Comida ${i + 1}:</label><select id="comida_${dia}_${i}">`;
 
-        // Generar HTML para las comidas del día
-        comidasDia.forEach((comida, index) => {
-            menuSemanal += `
-                <li><strong>Comida ${index + 1}:</strong> ${comida.nombre} (${comida.calorias} calorías)<br>
-                <em>${comida.descripcion}</em><br>
-                Proteínas: ${comida.proteinas}g, Carbohidratos: ${comida.carbohidratos}g, Grasas: ${comida.grasas}g
-                </li>
-            `;
-        });
+            // Mostrar múltiples opciones para cada comida
+            recetasFiltradas.forEach(receta => {
+                opcionesComidas += `<option value="${receta.nombre}">
+                    ${receta.nombre} (${receta.calorias} calorías)
+                </option>`;
+            });
+
+            opcionesComidas += `</select><br>`;
+        }
     });
 
-    menuSemanal += "</ul>";
-    return menuSemanal;
+    return opcionesComidas;
+}
+
+// Función para generar el menú final basado en las elecciones del usuario
+function generarMenuFinal(caloriasDiarias, comidasPorDia) {
+    const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+    let menuFinal = "<h3>Tu Menú Final:</h3><ul>";
+
+    diasSemana.forEach(dia => {
+        menuFinal += `<h4>${dia}:</h4>`;
+        for (let i = 0; i < comidasPorDia; i++) {
+            const comidaSeleccionada = document.getElementById(`comida_${dia}_${i}`).value;
+            menuFinal += `<li>Comida ${i + 1}: ${comidaSeleccionada}</li>`;
+        }
+    });
+
+    menuFinal += "</ul>";
+    return menuFinal;
 }
 
 // Función para manejar el envío del formulario
@@ -79,7 +81,13 @@ document.getElementById("nutricionForm").addEventListener("submit", function(eve
         caloriasDiarias = bmr * 1.2;
     }
 
-    // Generar el menú semanal
-    const menuSemanal = generarMenuSemanal(caloriasDiarias, restricciones, comidasPorDia);
-    document.getElementById("resultadoDieta").innerHTML = menuSemanal;
+    // Mostrar opciones de comida para cada día
+    const opcionesDeComida = mostrarOpcionesDeComida(caloriasDiarias, restricciones, comidasPorDia);
+    document.getElementById("opcionesComida").innerHTML = opcionesDeComida;
+
+    // Escuchar el evento de generación del menú final cuando el usuario haga sus selecciones
+    document.getElementById("generarMenuFinal").addEventListener("click", function() {
+        const menuFinal = generarMenuFinal(caloriasDiarias, comidasPorDia);
+        document.getElementById("resultadoDieta").innerHTML = menuFinal;
+    });
 });
