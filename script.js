@@ -1,5 +1,7 @@
-// Base de datos de 100 recetas con restricciones alimentarias y objetivos de nutrición
-const recetas = [
+// Variable global para almacenar el gráfico de progreso
+let graficoProgreso;
+
+// Base de datos de recetas con restricciones alimenticias y objetivos de nutrición
     // Desayunos
     { nombre: "Avena con Frutas", calorias: 350, proteinas: 10, carbohidratos: 60, grasas: 5, restricciones: ["sin gluten", "vegetariano"], tipo: "desayuno", objetivos: ["mantener_peso", "ganar_masa"] },
     { nombre: "Tostadas con Aguacate", calorias: 250, proteinas: 5, carbohidratos: 30, grasas: 15, restricciones: ["vegano", "sin gluten"], tipo: "desayuno", objetivos: ["mantener_peso", "perder_peso"] },
@@ -114,30 +116,54 @@ document.getElementById("nutricionForm").addEventListener("submit", function(eve
     document.getElementById("resultadoDieta").innerHTML = menuGenerado;
 });
 
-// Seguimiento de Progreso con Chart.js
+// Función para manejar el envío del formulario de progreso y guardarlo en localStorage
 document.getElementById("progresoForm").addEventListener("submit", function(event) {
     event.preventDefault();
 
+    const dni = document.getElementById("dni").value;
     const peso = document.getElementById("peso").value;
     const medidaCintura = document.getElementById("medidaCintura").value;
     const medidaCadera = document.getElementById("medidaCadera").value;
 
-    // Aquí podrías almacenar los valores en una base de datos o localStorage
+    // Guardar el progreso en el localStorage, usando el DNI como clave
+    const progresoUsuario = {
+        peso: peso,
+        medidaCintura: medidaCintura,
+        medidaCadera: medidaCadera,
+        fecha: new Date().toLocaleDateString() // Fecha del registro
+    };
 
-    // Ejemplo de datos estáticos para el gráfico
+    let progresos = JSON.parse(localStorage.getItem(dni)) || [];
+    progresos.push(progresoUsuario);
+    localStorage.setItem(dni, JSON.stringify(progresos));
+
+    // Mostrar el progreso en el gráfico
+    mostrarGraficoProgreso(dni);
+});
+
+// Función para cargar y mostrar el gráfico de progreso del usuario
+function mostrarGraficoProgreso(dni) {
+    const progresos = JSON.parse(localStorage.getItem(dni)) || [];
+
+    // Crear los datos para el gráfico
     const datosProgreso = {
-        labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'],
+        labels: progresos.map((progreso, index) => `Registro ${index + 1}`),
         datasets: [{
             label: 'Peso (kg)',
-            data: [90, 88, 87, peso], // Reemplazar con los valores reales
+            data: progresos.map(progreso => progreso.peso),
             borderColor: 'rgba(75, 192, 192, 1)',
             borderWidth: 2
         }]
     };
 
+    // Si ya existe un gráfico, destruirlo antes de crear uno nuevo
+    if (graficoProgreso) {
+        graficoProgreso.destroy();
+    }
+
     // Crear el gráfico de progreso
     const ctx = document.getElementById('graficoProgreso').getContext('2d');
-    const graficoProgreso = new Chart(ctx, {
+    graficoProgreso = new Chart(ctx, {
         type: 'line',
         data: datosProgreso,
         options: {
@@ -149,4 +175,14 @@ document.getElementById("progresoForm").addEventListener("submit", function(even
             }
         }
     });
+}
+
+// Función para cargar el progreso del usuario al ingresar el DNI
+document.getElementById("cargarProgresoForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const dni = document.getElementById("dniCargar").value;
+
+    // Mostrar el progreso del usuario en el gráfico
+    mostrarGraficoProgreso(dni);
 });
