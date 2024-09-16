@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ANIMAL - Nutrición Personalizada</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Librería para gráficas de progreso -->
     <script src="script.js" defer></script>
 </head>
 <body>
@@ -23,35 +24,42 @@
     <section id="form-section">
         <form id="nutricionForm">
             <label for="nombre">Nombre</label>
-            <input type="text" id="nombre" name="nombre" required>
+            <input type="text" id="nombre" required>
 
             <label for="edad">Edad</label>
-            <input type="number" id="edad" name="edad" required>
+            <input type="number" id="edad" required>
 
             <label for="peso">Peso (kg)</label>
-            <input type="number" id="peso" name="peso" required>
+            <input type="number" id="peso" required>
 
             <label for="altura">Altura (cm)</label>
-            <input type="number" id="altura" name="altura" required>
+            <input type="number" id="altura" required>
 
             <label for="genero">Género</label>
-            <select id="genero" name="genero" required>
+            <select id="genero" required>
                 <option value="masculino">Masculino</option>
                 <option value="femenino">Femenino</option>
             </select>
 
             <label for="objetivo">Objetivo</label>
-            <select id="objetivo" name="objetivo" required>
+            <select id="objetivo" required>
                 <option value="mantener_peso">Mantener Peso</option>
                 <option value="perder_peso">Perder Peso</option>
                 <option value="ganar_masa">Ganar Masa Muscular</option>
             </select>
 
             <label for="restricciones">Restricciones alimenticias (opcional)</label>
-            <input type="text" id="restricciones" name="restricciones" placeholder="Ej. sin gluten, vegetariano">
+            <input type="text" id="restricciones" placeholder="Ej. sin gluten, vegetariano">
 
-            <label for="dia">Día de la semana</label>
-            <select id="dia" name="dia" required>
+            <label for="comidas">Selecciona el número de comidas por día</label>
+            <select id="comidas" required>
+                <option value="3">3 Comidas</option>
+                <option value="4">4 Comidas</option>
+                <option value="5">5 Comidas</option>
+            </select>
+
+            <label for="dia">Selecciona el día</label>
+            <select id="dia" required>
                 <option value="lunes">Lunes</option>
                 <option value="martes">Martes</option>
                 <option value="miércoles">Miércoles</option>
@@ -61,28 +69,41 @@
                 <option value="domingo">Domingo</option>
             </select>
 
-            <h3>Selecciona el número de comidas por día</h3>
-            <label for="comidas">Número de comidas por día</label>
-            <select id="comidas" name="comidas">
-                <option value="3">3 Comidas</option>
-                <option value="4">4 Comidas</option>
-                <option value="5">5 Comidas</option>
-            </select>
-
             <button type="submit">Generar Opciones de Comida</button>
         </form>
 
         <div id="opcionesComida"></div>
-        <button type="button" id="generarMenuFinal">Generar Menú Final</button>
+
+        <button id="generarMenuFinal">Generar Menú Final</button>
         <div id="resultadoDieta"></div>
     </section>
 
+    <!-- Seguimiento de Progreso -->
+    <section id="progreso">
+        <h2>Seguimiento de Progreso</h2>
+        <form id="progresoForm">
+            <label for="peso">Peso (kg):</label>
+            <input type="number" id="peso" name="peso" required>
+
+            <label for="medidaCintura">Medida de Cintura (cm):</label>
+            <input type="number" id="medidaCintura" name="medidaCintura" required>
+
+            <label for="medidaCadera">Medida de Cadera (cm):</label>
+            <input type="number" id="medidaCadera" name="medidaCadera">
+
+            <button type="submit">Actualizar Progreso</button>
+        </form>
+
+        <canvas id="graficoProgreso"></canvas> <!-- Aquí irá el gráfico de progreso -->
+    </section>
+
+    <!-- Galería de imágenes para la inspiración -->
     <section id="gallery">
         <h2>Imágenes inspiradoras</h2>
         <div class="image-container">
             <img src="gym1.png" alt="Entrenamiento con pesas">
             <img src="gym2.png" alt="Cuidado corporal">
-            <img src="food.png" alt="Comida saludable">
+            <img src="comida.png" alt="Comida saludable">
         </div>
     </section>
 
