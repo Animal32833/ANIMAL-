@@ -49,46 +49,32 @@ const recetas = [
     { nombre: "Manzana con Mantequilla de Maní", calorias: 150, proteinas: 5, carbohidratos: 30, grasas: 10, restricciones: ["vegano", "sin gluten"], tipo: "snack", objetivos: ["mantener_peso"] },
 ];
 
-// Función para mostrar opciones de menú diario
-function mostrarOpcionesDeComida(caloriasDiarias, restriccionesUsuario, comidasPorDia, diaSeleccionado, objetivo) {
-    const caloriasPorComida = caloriasDiarias / comidasPorDia;
-    let opcionesComidas = `<h3>Opciones para ${diaSeleccionado}:</h3>`;
+// Función para generar automáticamente el menú completo del día
+function generarMenuAutomatico(caloriasDiarias, restriccionesUsuario, objetivo) {
+    const comidasDiarias = ['desayuno', 'media-mañana', 'almuerzo', 'merienda', 'cena'];
+    let menuCompleto = `<h3>Menú del día:</h3><ul>`;
 
-    for (let i = 0; i < comidasPorDia; i++) {
+    comidasDiarias.forEach(comida => {
+        // Filtrar recetas según el tipo de comida, restricciones y objetivo del usuario
         const recetasFiltradas = recetas.filter(receta => {
             const cumpleRestricciones = restriccionesUsuario
                 ? receta.restricciones.includes(restriccionesUsuario.toLowerCase())
                 : true;
             const cumpleObjetivo = receta.objetivos.includes(objetivo);
-            return receta.calorias <= caloriasPorComida && cumpleRestricciones && cumpleObjetivo;
+            return receta.tipo === comida && cumpleRestricciones && cumpleObjetivo;
         });
 
-        opcionesComidas += `<label>Comida ${i + 1}:</label><select id="comida_${diaSeleccionado}_${i}">`;
+        // Seleccionar una receta aleatoria para cada tipo de comida
+        if (recetasFiltradas.length > 0) {
+            const recetaSeleccionada = recetasFiltradas[Math.floor(Math.random() * recetasFiltradas.length)];
+            menuCompleto += `<li><strong>${comida.charAt(0).toUpperCase() + comida.slice(1)}:</strong> ${recetaSeleccionada.nombre} (${recetaSeleccionada.calorias} calorías)</li>`;
+        } else {
+            menuCompleto += `<li><strong>${comida.charAt(0).toUpperCase() + comida.slice(1)}:</strong> No hay opciones disponibles para tus restricciones.</li>`;
+        }
+    });
 
-        // Mostrar múltiples opciones para cada comida
-        recetasFiltradas.forEach(receta => {
-            opcionesComidas += `<option value="${receta.nombre}">
-                ${receta.nombre} (${receta.calorias} calorías)
-            </option>`;
-        });
-
-        opcionesComidas += `</select><br>`;
-    }
-
-    return opcionesComidas;
-}
-
-// Función para generar el menú final basado en las elecciones del usuario
-function generarMenuFinal(caloriasDiarias, comidasPorDia, diaSeleccionado) {
-    let menuFinal = "<h3>Tu Menú Final:</h3><ul>";
-
-    for (let i = 0; i < comidasPorDia; i++) {
-        const comidaSeleccionada = document.getElementById(`comida_${diaSeleccionado}_${i}`).value;
-        menuFinal += `<li>Comida ${i + 1}: ${comidaSeleccionada}</li>`;
-    }
-
-    menuFinal += "</ul>";
-    return menuFinal;
+    menuCompleto += `</ul>`;
+    return menuCompleto;
 }
 
 // Función para manejar el envío del formulario
@@ -103,8 +89,7 @@ document.getElementById("nutricionForm").addEventListener("submit", function(eve
     const genero = document.getElementById("genero").value;
     const objetivo = document.getElementById("objetivo").value;
     const restricciones = document.getElementById("restricciones").value; // Restricciones alimentarias
-    const comidasPorDia = document.getElementById("comidas").value; // Número de comidas
-    const diaSeleccionado = document.getElementById("dia").value; // Día seleccionado
+    const comidasPorDia = 5; // Número fijo de comidas por día
 
     // Calcular BMR (Tasa Metabólica Basal)
     let bmr;
@@ -124,15 +109,9 @@ document.getElementById("nutricionForm").addEventListener("submit", function(eve
         caloriasDiarias = bmr * 1.2;
     }
 
-    // Mostrar opciones de comida para el día seleccionado
-    const opcionesDeComida = mostrarOpcionesDeComida(caloriasDiarias, restricciones, comidasPorDia, diaSeleccionado, objetivo);
-    document.getElementById("opcionesComida").innerHTML = opcionesDeComida;
-
-    // Escuchar el evento de generación del menú final cuando el usuario haga sus selecciones
-    document.getElementById("generarMenuFinal").addEventListener("click", function() {
-        const menuFinal = generarMenuFinal(caloriasDiarias, comidasPorDia, diaSeleccionado);
-        document.getElementById("resultadoDieta").innerHTML = menuFinal;
-    });
+    // Generar el menú automáticamente
+    const menuGenerado = generarMenuAutomatico(caloriasDiarias, restricciones, objetivo);
+    document.getElementById("resultadoDieta").innerHTML = menuGenerado;
 });
 
 // Seguimiento de Progreso con Chart.js
