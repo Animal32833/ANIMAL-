@@ -1,3 +1,28 @@
+// Base de recetas con restricciones alimentarias
+const recetas = [
+    {
+        nombre: "Avena con Frutas",
+        calorias: 350,
+        proteinas: 10,
+        carbohidratos: 60,
+        grasas: 5,
+        restricciones: ["sin gluten", "vegetariano"],
+        descripcion: "Avena cocida con plátano, fresas y miel.",
+        tipo: "desayuno"
+    },
+    {
+        nombre: "Pollo a la Parrilla con Arroz",
+        calorias: 500,
+        proteinas: 40,
+        carbohidratos: 60,
+        grasas: 10,
+        restricciones: ["sin gluten"],
+        descripcion: "Pollo a la parrilla servido con arroz integral y brócoli al vapor.",
+        tipo: "almuerzo"
+    },
+    // Agrega más recetas aquí...
+];
+
 // Función para mostrar opciones de menú diario y permitir la selección de cada comida
 function mostrarOpcionesDeComida(caloriasDiarias, restriccionesUsuario, comidasPorDia) {
     const caloriasPorComida = caloriasDiarias / comidasPorDia;
@@ -63,5 +88,31 @@ document.getElementById("nutricionForm").addEventListener("submit", function(eve
     const restricciones = document.getElementById("restricciones").value; // Restricciones alimentarias
     const comidasPorDia = document.getElementById("comidas").value; // Número de comidas
 
-    // Calcular BMR (
+    // Calcular BMR (Tasa Metabólica Basal)
+    let bmr;
+    if (genero === "masculino") {
+        bmr = 88.36 + (13.4 * peso) + (4.8 * altura) - (5.7 * edad);
+    } else {
+        bmr = 447.6 + (9.2 * peso) + (3.1 * altura) - (4.3 * edad);
+    }
 
+    // Calcular las calorías diarias dependiendo del objetivo
+    let caloriasDiarias;
+    if (objetivo === "perder_peso") {
+        caloriasDiarias = bmr * 1.2 - 500;
+    } else if (objetivo === "ganar_masa") {
+        caloriasDiarias = bmr * 1.5 + 300;
+    } else {
+        caloriasDiarias = bmr * 1.2;
+    }
+
+    // Mostrar opciones de comida para cada día
+    const opcionesDeComida = mostrarOpcionesDeComida(caloriasDiarias, restricciones, comidasPorDia);
+    document.getElementById("opcionesComida").innerHTML = opcionesDeComida;
+
+    // Escuchar el evento de generación del menú final cuando el usuario haga sus selecciones
+    document.getElementById("generarMenuFinal").addEventListener("click", function() {
+        const menuFinal = generarMenuFinal(caloriasDiarias, comidasPorDia);
+        document.getElementById("resultadoDieta").innerHTML = menuFinal;
+    });
+});
