@@ -6,7 +6,7 @@ const recetas = [
         proteinas: 30,
         carbohidratos: 20,
         grasas: 20,
-        restricciones: ["sin gluten"], // Apta para celíacos
+        restricciones: ["sin gluten"],
         descripcion: "Una ensalada fresca con pollo a la parrilla, aguacate, y aderezo de limón.",
     },
     {
@@ -15,7 +15,7 @@ const recetas = [
         proteinas: 25,
         carbohidratos: 30,
         grasas: 10,
-        restricciones: ["sin gluten", "vegetariano"], // Apto para celíacos y vegetarianos
+        restricciones: ["sin gluten", "vegetariano"],
         descripcion: "Un batido perfecto para después del entrenamiento con plátano, leche de almendra y proteína en polvo.",
     },
     {
@@ -24,8 +24,8 @@ const recetas = [
         proteinas: 40,
         carbohidratos: 10,
         grasas: 30,
-        restricciones: ["sin gluten", "pescatariano"], // Apto para celíacos y pescatarianos
-        descripcion: "Salmón al horno acompañado de verduras al vapor, perfecto para una cena saludable.",
+        restricciones: ["sin gluten", "pescatariano"],
+        descripcion: "Salmón al horno acompañado de verduras al vapor.",
     },
     {
         nombre: "Tofu a la plancha con quinoa",
@@ -33,43 +33,57 @@ const recetas = [
         proteinas: 20,
         carbohidratos: 50,
         grasas: 10,
-        restricciones: ["vegano", "sin gluten"], // Apto para veganos y celíacos
+        restricciones: ["vegano", "sin gluten"],
         descripcion: "Tofu marinado a la plancha con quinoa y verduras al vapor.",
     },
     // Agrega más recetas según sea necesario
 ];
 
-// Función para mostrar recetas basadas en calorías y restricciones alimentarias
-function mostrarRecetas(caloriasDiarias, restriccionesUsuario) {
-    const recetasFiltradas = recetas.filter(receta => {
-        // Filtrar las recetas que se ajusten a las restricciones del usuario
-        const cumpleRestricciones = restriccionesUsuario
-            ? receta.restricciones.includes(restriccionesUsuario.toLowerCase())
-            : true;
-        
-        return receta.calorias <= caloriasDiarias / 3 && cumpleRestricciones;
-    });
-
-    // Si hay recetas disponibles, las mostramos
-    if (recetasFiltradas.length > 0) {
-        let recetasHTML = "<h3>Recetas sugeridas:</h3><ul>";
-        recetasFiltradas.forEach(receta => {
-            recetasHTML += `
-                <li>
-                    <strong>${receta.nombre}</strong> - ${receta.calorias} calorías<br>
-                    <em>${receta.descripcion}</em><br>
-                    Proteínas: ${receta.proteinas}g, Carbohidratos: ${receta.carbohidratos}g, Grasas: ${receta.grasas}g
-                </li>
-            `;
+// Función para mostrar recetas basadas en calorías, restricciones y el número de comidas
+function mostrarRecetasPorDia(caloriasDiarias, restriccionesUsuario, comidasPorDia) {
+    const caloriasPorComida = caloriasDiarias / comidasPorDia;
+    let comidas = [];
+    
+    for (let i = 0; i < comidasPorDia; i++) {
+        const recetasFiltradas = recetas.filter(receta => {
+            const cumpleRestricciones = restriccionesUsuario
+                ? receta.restricciones.includes(restriccionesUsuario.toLowerCase())
+                : true;
+            return receta.calorias <= caloriasPorComida && cumpleRestricciones;
         });
-        recetasHTML += "</ul>";
-        return recetasHTML;
-    } else {
-        return "<p>No se encontraron recetas que cumplan con tus restricciones alimentarias.</p>";
+        
+        if (recetasFiltradas.length > 0) {
+            // Seleccionar una receta aleatoria para cada comida
+            const recetaSeleccionada = recetasFiltradas[Math.floor(Math.random() * recetasFiltradas.length)];
+            comidas.push(recetaSeleccionada);
+        } else {
+            comidas.push({
+                nombre: "No hay recetas disponibles para esta comida.",
+                descripcion: "Por favor ajusta tus restricciones alimentarias o cantidad de calorías.",
+                calorias: 0,
+                proteinas: 0,
+                carbohidratos: 0,
+                grasas: 0
+            });
+        }
     }
+    
+    // Generar HTML para las comidas del día
+    let comidasHTML = "<h3>Comidas del día:</h3><ul>";
+    comidas.forEach((comida, index) => {
+        comidasHTML += `
+            <li><strong>Comida ${index + 1}:</strong> ${comida.nombre} (${comida.calorias} calorías)<br>
+            <em>${comida.descripcion}</em><br>
+            Proteínas: ${comida.proteinas}g, Carbohidratos: ${comida.carbohidratos}g, Grasas: ${comida.grasas}g
+            </li>
+        `;
+    });
+    comidasHTML += "</ul>";
+    
+    return comidasHTML;
 }
 
-// Función para generar el plan de dieta y recetas
+// Función para manejar el envío del formulario
 document.getElementById("nutricionForm").addEventListener("submit", function(event) {
     event.preventDefault();
 
@@ -81,6 +95,7 @@ document.getElementById("nutricionForm").addEventListener("submit", function(eve
     const genero = document.getElementById("genero").value;
     const objetivo = document.getElementById("objetivo").value;
     const restricciones = document.getElementById("restricciones").value; // Restricciones alimentarias
+    const comidasPorDia = document.getElementById("comidas").value; // Número de comidas
 
     // Calcular BMR (Tasa Metabólica Basal) usando la fórmula de Harris-Benedict
     let bmr;
@@ -113,7 +128,7 @@ document.getElementById("nutricionForm").addEventListener("submit", function(eve
         </ul>
     `;
 
-    // Mostrar el plan de dieta y las recetas sugeridas
-    const recetasSugeridas = mostrarRecetas(caloriasDiarias, restricciones);
-    document.getElementById("resultadoDieta").innerHTML = planDieta + recetasSugeridas;
+    // Mostrar el plan de dieta y las recetas del día
+    const comidasDelDia = mostrarRecetasPorDia(caloriasDiarias, restricciones, comidasPorDia);
+    document.getElementById("resultadoDieta").innerHTML = planDieta + comidasDelDia;
 });
