@@ -41,11 +41,15 @@
                 <option value="femenino">Femenino</option>
                 <option value="otro">Otro</option>
             </select>
+           <h3>Selecciona el número de comidas por día</h3>
            <label for="comidas">Número de comidas por día</label>
            <select id="comidas" name="comidas">
-               <option value="3">3 Comidas</option>
-               <option value="4">4 Comidas</option>
-               <option value="5">5 Comidas</option>
+             <option value="3">3 Comidas</option>
+             <option value="4">4 Comidas</option>
+             <option value="5">5 Comidas</option>
+        </select>
+<div id="opcionesComida"></div>
+
            </select>
 
             <label for="objetivo">Objetivo</label>
@@ -60,6 +64,8 @@
 
 
             <button type="submit">Generar Dieta</button>
+            <button type="button" id="generarMenuFinal">Generar Menú Final</button>
+<div id="resultadoDieta"></div>
         </form>
     <section id="result">
     <h2>Tu plan de dieta personalizado</h2>
