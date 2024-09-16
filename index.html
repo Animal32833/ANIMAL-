@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -39,51 +38,28 @@
             <select id="genero" name="genero" required>
                 <option value="masculino">Masculino</option>
                 <option value="femenino">Femenino</option>
-                <option value="otro">Otro</option>
             </select>
-           <h3>Selecciona el número de comidas por día</h3>
-           <label for="comidas">Número de comidas por día</label>
-           <select id="comidas" name="comidas">
-             <option value="3">3 Comidas</option>
-             <option value="4">4 Comidas</option>
-             <option value="5">5 Comidas</option>
-        </select>
-<div id="opcionesComida"></div>
-
-           </select>
 
             <label for="objetivo">Objetivo</label>
             <select id="objetivo" name="objetivo" required>
+                <option value="mantener_peso">Mantener Peso</option>
                 <option value="perder_peso">Perder Peso</option>
                 <option value="ganar_masa">Ganar Masa Muscular</option>
-                <option value="mantener">Mantener Peso</option>
             </select>
 
             <label for="restricciones">Restricciones alimenticias (opcional)</label>
-<input type="text" id="restricciones" name="restricciones" placeholder="Ej. sin gluten, vegetariano">
+            <input type="text" id="restricciones" name="restricciones" placeholder="Ej. sin gluten, vegetariano">
 
+            <h3>Selecciona el número de comidas por día</h3>
+            <label for="comidas">Número de comidas por día</label>
+            <select id="comidas" name="comidas">
+                <option value="3">3 Comidas</option>
+                <option value="4">4 Comidas</option>
+                <option value="5">5 Comidas</option>
+            </select>
 
-            <button type="submit">Generar Dieta</button>
-            <button type="button" id="generarMenuFinal">Generar Menú Final</button>
-<div id="resultadoDieta"></div>
+            <button type="submit">Generar Opciones de Comida</button>
         </form>
-    <section id="result">
-    <h2>Tu plan de dieta personalizado</h2>
-    <div id="resultadoDieta"></div>
-</section>
-</section>
 
-    <section id="gallery">
-        
-        <div class="image-container">
-            <img src="gym1.png" alt="Entrenamiento con pesas">
-            <img src="gym2.png" alt="Cuidado corporal">
-            <img src="food.png" alt="Comida saludable">
-        </div>
-    </section>
-
-    <footer>
-        <p>&copy; 2024 ANIMAL Gym. Todos los derechos reservados.</p>
-    </footer>
-</body>
-</html>
+        <div id="opcionesComida"></div>
+       
