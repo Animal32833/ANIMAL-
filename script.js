@@ -31,12 +31,26 @@ const recetas = [
     { nombre: "Ensalada César con Pollo", calorias: 350, proteinas: 30, carbohidratos: 15, grasas: 20, restricciones: ["sin gluten"], tipo: "cena", objetivos: ["mantener_peso"] },
     { nombre: "Pizza de Coliflor", calorias: 400, proteinas: 20, carbohidratos: 40, grasas: 15, restricciones: ["vegetariano", "sin gluten"], tipo: "cena", objetivos: ["mantener_peso", "perder_peso"] },
     { nombre: "Lomo de Cerdo con Espárragos", calorias: 500, proteinas: 45, carbohidratos: 10, grasas: 25, restricciones: ["sin gluten"], tipo: "cena", objetivos: ["ganar_masa"] },
-    { nombre: "Tilapia al Limón", calorias: 300, proteinas: 35, carbohidratos: 5, grasas: 15, restricciones: ["sin gluten", "pescatariano"],
+    { nombre: "Tilapia al Limón", calorias: 300, proteinas: 35, carbohidratos: 5, grasas: 15, restricciones: ["sin gluten", "pescatariano"], tipo: "cena", objetivos: ["mantener_peso", "perder_peso"] },
+    { nombre: "Espagueti de Calabacín", calorias: 350, proteinas: 20, carbohidratos: 30, grasas: 10, restricciones: ["vegano", "sin gluten"], tipo: "cena", objetivos: ["perder_peso"] },
+    { nombre: "Pollo al Curry con Verduras", calorias: 450, proteinas: 40, carbohidratos: 20, grasas: 20, restricciones: ["sin gluten"], tipo: "cena", objetivos: ["ganar_masa"] },
+    { nombre: "Sopa de Lentejas", calorias: 300, proteinas: 20, carbohidratos: 40, grasas: 10, restricciones: ["vegano", "sin gluten"], tipo: "cena", objetivos: ["perder_peso", "mantener_peso"] },
 
+    // Snacks
+    { nombre: "Yogur con Almendras", calorias: 200, proteinas: 10, carbohidratos: 20, grasas: 10, restricciones: ["sin gluten", "vegetariano"], tipo: "snack", objetivos: ["mantener_peso"] },
+    { nombre: "Frutas con Mantequilla de Almendra", calorias: 250, proteinas: 5, carbohidratos: 40, grasas: 10, restricciones: ["vegano", "sin gluten"], tipo: "snack", objetivos: ["mantener_peso", "perder_peso"] },
+    { nombre: "Barra de Proteína Casera", calorias: 300, proteinas: 25, carbohidratos: 30, grasas: 15, restricciones: ["sin gluten"], tipo: "snack", objetivos: ["ganar_masa"] },
+    { nombre: "Hummus con Palitos de Zanahoria", calorias: 150, proteinas: 5, carbohidratos: 15, grasas: 5, restricciones: ["vegano", "sin gluten"], tipo: "snack", objetivos: ["mantener_peso", "perder_peso"] },
+    { nombre: "Tostadas de Arroz con Atún", calorias: 200, proteinas: 20, carbohidratos: 15, grasas: 5, restricciones: ["sin gluten"], tipo: "snack", objetivos: ["mantener_peso", "ganar_masa"] },
+    { nombre: "Nueces Mixtas", calorias: 250, proteinas: 5, carbohidratos: 10, grasas: 20, restricciones: ["vegano", "sin gluten"], tipo: "snack", objetivos: ["mantener_peso", "ganar_masa"] },
+    { nombre: "Batido de Proteínas", calorias: 250, proteinas: 30, carbohidratos: 20, grasas: 5, restricciones: ["sin gluten", "vegetariano"], tipo: "snack", objetivos: ["ganar_masa"] },
+    { nombre: "Galletas de Avena con Chocolate", calorias: 300, proteinas: 5, carbohidratos: 50, grasas: 10, restricciones: ["sin gluten"], tipo: "snack", objetivos: ["mantener_peso"] },
+    { nombre: "Smoothie Verde", calorias: 200, proteinas: 10, carbohidratos: 30, grasas: 5, restricciones: ["sin gluten", "vegano"], tipo: "snack", objetivos: ["perder_peso"] },
+    { nombre: "Manzana con Mantequilla de Maní", calorias: 150, proteinas: 5, carbohidratos: 30, grasas: 10, restricciones: ["vegano", "sin gluten"], tipo: "snack", objetivos: ["mantener_peso"] },
 ];
 
 // Función para mostrar opciones de menú diario y permitir la selección de cada comida
-function mostrarOpcionesDeComida(caloriasDiarias, restriccionesUsuario, comidasPorDia, diaSeleccionado) {
+function mostrarOpcionesDeComida(caloriasDiarias, restriccionesUsuario, comidasPorDia, diaSeleccionado, objetivo) {
     const caloriasPorComida = caloriasDiarias / comidasPorDia;
     let opcionesComidas = `<h3>Opciones para ${diaSeleccionado}:</h3>`;
 
@@ -45,7 +59,8 @@ function mostrarOpcionesDeComida(caloriasDiarias, restriccionesUsuario, comidasP
             const cumpleRestricciones = restriccionesUsuario
                 ? receta.restricciones.includes(restriccionesUsuario.toLowerCase())
                 : true;
-            return receta.calorias <= caloriasPorComida && cumpleRestricciones;
+            const cumpleObjetivo = receta.objetivos.includes(objetivo);
+            return receta.calorias <= caloriasPorComida && cumpleRestricciones && cumpleObjetivo;
         });
 
         opcionesComidas += `<label>Comida ${i + 1}:</label><select id="comida_${diaSeleccionado}_${i}">`;
@@ -110,7 +125,7 @@ document.getElementById("nutricionForm").addEventListener("submit", function(eve
     }
 
     // Mostrar opciones de comida para el día seleccionado
-    const opcionesDeComida = mostrarOpcionesDeComida(caloriasDiarias, restricciones, comidasPorDia, diaSeleccionado);
+    const opcionesDeComida = mostrarOpcionesDeComida(caloriasDiarias, restricciones, comidasPorDia, diaSeleccionado, objetivo);
     document.getElementById("opcionesComida").innerHTML = opcionesDeComida;
 
     // Escuchar el evento de generación del menú final cuando el usuario haga sus selecciones
