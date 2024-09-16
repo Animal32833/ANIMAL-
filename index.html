@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANIMAL - Nutrición Personalizada</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="logo-animal.png" alt="Animal Logo">
+        </div>
+        <h1>ANIMAL - Nutrición Personalizada</h1>
+    </header>
+
+    <section id="hero">
+        <h2>Bienvenido a tu plan personalizado de nutrición y entrenamiento</h2>
+        <p>Introduce tus datos para obtener un plan acorde a tus objetivos y necesidades.</p>
+    </section>
+
+    <section id="form-section">
+        <form id="nutricionForm">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" name="nombre" required>
+
+            <label for="edad">Edad</label>
+            <input type="number" id="edad" name="edad" required>
+
+            <label for="peso">Peso (kg)</label>
+            <input type="number" id="peso" name="peso" required>
+
+            <label for="altura">Altura (cm)</label>
+            <input type="number" id="altura" name="altura" required>
+
+            <label for="genero">Género</label>
+            <select id="genero" name="genero" required>
+                <option value="masculino">Masculino</option>
+                <option value="femenino">Femenino</option>
+                <option value="otro">Otro</option>
+            </select>
+
+            <label for="objetivo">Objetivo</label>
+            <select id="objetivo" name="objetivo" required>
+                <option value="perder_peso">Perder Peso</option>
+                <option value="ganar_masa">Ganar Masa Muscular</option>
+                <option value="mantener">Mantener Peso</option>
+            </select>
+
+            <label for="restricciones">Restricciones alimenticias</label>
+            <input type="text" id="restricciones" name="restricciones">
+
+            <button type="submit">Generar Dieta</button>
+        </form>
+    </section>
+
+    <section id="gallery">
+        <h2>Imágenes inspiradoras</h2>
+        <div class="image-container">
+            <img src="gym1.jpg" alt="Entrenamiento con pesas">
+            <img src="gym2.jpg" alt="Cuidado corporal">
+            <img src="food.jpg" alt="Comida saludable">
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 ANIMAL Gym. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>
