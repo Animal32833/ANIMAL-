@@ -71,6 +71,37 @@
 
             <button type="submit">Generar Opciones de Comida</button>
         </form>
+<!-- Formulario para registrar el progreso -->
+<section id="progreso">
+    <h2>Registro de Progreso</h2>
+    <form id="progresoForm">
+        <label for="dni">DNI:</label>
+        <input type="text" id="dni" required>
+
+        <label for="peso">Peso (kg):</label>
+        <input type="number" id="peso" required>
+
+        <label for="medidaCintura">Medida de Cintura (cm):</label>
+        <input type="number" id="medidaCintura" required>
+
+        <label for="medidaCadera">Medida de Cadera (cm):</label>
+        <input type="number" id="medidaCadera">
+
+        <button type="submit">Registrar Progreso</button>
+    </form>
+</section>
+        
+<!-- Formulario para cargar el progreso guardado -->
+<section id="cargarProgreso">
+    <h2>Cargar Progreso por DNI</h2>
+    <form id="cargarProgresoForm">
+        <label for="dniCargar">DNI:</label>
+        <input type="text" id="dniCargar" required>
+        <button type="submit">Cargar Progreso</button>
+    </form>
+
+    <canvas id="graficoProgreso"></canvas> <!-- Aquí se mostrará el gráfico de progreso -->
+</section>
 
         <div id="opcionesComida"></div>
 
