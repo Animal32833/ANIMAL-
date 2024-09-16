@@ -63,31 +63,5 @@ document.getElementById("nutricionForm").addEventListener("submit", function(eve
     const restricciones = document.getElementById("restricciones").value; // Restricciones alimentarias
     const comidasPorDia = document.getElementById("comidas").value; // Número de comidas
 
-    // Calcular BMR (Tasa Metabólica Basal)
-    let bmr;
-    if (genero === "masculino") {
-        bmr = 88.36 + (13.4 * peso) + (4.8 * altura) - (5.7 * edad);
-    } else {
-        bmr = 447.6 + (9.2 * peso) + (3.1 * altura) - (4.3 * edad);
-    }
+    // Calcular BMR (
 
-    // Calcular las calorías diarias dependiendo del objetivo
-    let caloriasDiarias;
-    if (objetivo === "perder_peso") {
-        caloriasDiarias = bmr * 1.2 - 500;
-    } else if (objetivo === "ganar_masa") {
-        caloriasDiarias = bmr * 1.5 + 300;
-    } else {
-        caloriasDiarias = bmr * 1.2;
-    }
-
-    // Mostrar opciones de comida para cada día
-    const opcionesDeComida = mostrarOpcionesDeComida(caloriasDiarias, restricciones, comidasPorDia);
-    document.getElementById("opcionesComida").innerHTML = opcionesDeComida;
-
-    // Escuchar el evento de generación del menú final cuando el usuario haga sus selecciones
-    document.getElementById("generarMenuFinal").addEventListener("click", function() {
-        const menuFinal = generarMenuFinal(caloriasDiarias, comidasPorDia);
-        document.getElementById("resultadoDieta").innerHTML = menuFinal;
-    });
-});
