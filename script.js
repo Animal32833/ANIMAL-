@@ -49,7 +49,7 @@ const recetas = [
     { nombre: "Manzana con Mantequilla de Maní", calorias: 150, proteinas: 5, carbohidratos: 30, grasas: 10, restricciones: ["vegano", "sin gluten"], tipo: "snack", objetivos: ["mantener_peso"] },
 ];
 
-// Función para mostrar opciones de menú diario y permitir la selección de cada comida
+// Función para mostrar opciones de menú diario
 function mostrarOpcionesDeComida(caloriasDiarias, restriccionesUsuario, comidasPorDia, diaSeleccionado, objetivo) {
     const caloriasPorComida = caloriasDiarias / comidasPorDia;
     let opcionesComidas = `<h3>Opciones para ${diaSeleccionado}:</h3>`;
@@ -132,5 +132,42 @@ document.getElementById("nutricionForm").addEventListener("submit", function(eve
     document.getElementById("generarMenuFinal").addEventListener("click", function() {
         const menuFinal = generarMenuFinal(caloriasDiarias, comidasPorDia, diaSeleccionado);
         document.getElementById("resultadoDieta").innerHTML = menuFinal;
+    });
+});
+
+// Seguimiento de Progreso con Chart.js
+document.getElementById("progresoForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const peso = document.getElementById("peso").value;
+    const medidaCintura = document.getElementById("medidaCintura").value;
+    const medidaCadera = document.getElementById("medidaCadera").value;
+
+    // Aquí podrías almacenar los valores en una base de datos o localStorage
+
+    // Ejemplo de datos estáticos para el gráfico
+    const datosProgreso = {
+        labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'],
+        datasets: [{
+            label: 'Peso (kg)',
+            data: [90, 88, 87, peso], // Reemplazar con los valores reales
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 2
+        }]
+    };
+
+    // Crear el gráfico de progreso
+    const ctx = document.getElementById('graficoProgreso').getContext('2d');
+    const graficoProgreso = new Chart(ctx, {
+        type: 'line',
+        data: datosProgreso,
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: false
+                }
+            }
+        }
     });
 });
