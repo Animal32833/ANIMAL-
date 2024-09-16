@@ -2,6 +2,7 @@
 let graficoProgreso;
 
 // Base de datos de recetas con restricciones alimenticias y objetivos de nutrición
+const recetas = [
     // Desayunos
     { nombre: "Avena con Frutas", calorias: 350, proteinas: 10, carbohidratos: 60, grasas: 5, restricciones: ["sin gluten", "vegetariano"], tipo: "desayuno", objetivos: ["mantener_peso", "ganar_masa"] },
     { nombre: "Tostadas con Aguacate", calorias: 250, proteinas: 5, carbohidratos: 30, grasas: 15, restricciones: ["vegano", "sin gluten"], tipo: "desayuno", objetivos: ["mantener_peso", "perder_peso"] },
@@ -48,8 +49,9 @@ let graficoProgreso;
     { nombre: "Batido de Proteínas", calorias: 250, proteinas: 30, carbohidratos: 20, grasas: 5, restricciones: ["sin gluten", "vegetariano"], tipo: "snack", objetivos: ["ganar_masa"] },
     { nombre: "Galletas de Avena con Chocolate", calorias: 300, proteinas: 5, carbohidratos: 50, grasas: 10, restricciones: ["sin gluten"], tipo: "snack", objetivos: ["mantener_peso"] },
     { nombre: "Smoothie Verde", calorias: 200, proteinas: 10, carbohidratos: 30, grasas: 5, restricciones: ["sin gluten", "vegano"], tipo: "snack", objetivos: ["perder_peso"] },
-    { nombre: "Manzana con Mantequilla de Maní", calorias: 150, proteinas: 5, carbohidratos: 30, grasas: 10, restricciones: ["vegano", "sin gluten"], tipo: "snack", objetivos: ["mantener_peso"] },
+    { nombre: "Manzana con Mantequilla de Maní", calorias: 150, proteinas: 5, carbohidratos: 30, grasas: 10, restricciones: ["vegano", "sin gluten"], tipo: "snack", objetivos: ["mantener_peso"] }
 ];
+
 
 // Función para generar automáticamente el menú completo del día
 function generarMenuAutomatico(caloriasDiarias, restriccionesUsuario, objetivo) {
