@@ -122,6 +122,22 @@
         footer p {
             margin: 0;
         }
+
+        /* Estilos para el menú generado */
+        .menu-container {
+            margin-top: 20px;
+            text-align: left;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .nutrition-info {
+            display: none;
+            background-color: #444;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -218,7 +234,6 @@
 
     <!-- JavaScript -->
     <script>
-        // Variable global para almacenar el gráfico de progreso
         let graficoProgreso;
 
         // Función para calcular la TMB (Tasa Metabólica Basal)
@@ -237,15 +252,17 @@
 
         // Base de datos de recetas con restricciones alimenticias y objetivos de nutrición
         const recetas = [
-            { nombre: "Avena con Frutas", calorias: 350, proteinas: 10, carbohidratos: 60, grasas: 5, restricciones: ["sin gluten", "vegetariano"], tipo: "desayuno", objetivos: ["mantener_peso", "ganar_masa"] },
-            { nombre: "Tostadas con Aguacate", calorias: 250, proteinas: 5, carbohidratos: 30, grasas: 15, restricciones: ["vegano", "sin gluten"], tipo: "desayuno", objetivos: ["mantener_peso", "perder_peso"] },
-            // Puedes agregar más recetas según lo necesites...
+            { nombre: "Avena con Frutas", calorias: 350, proteinas: 10, carbohidratos: 60, grasas: 5, restricciones: ["sin gluten", "vegetariano"], tipo: "desayuno", objetivos: ["mantener_peso", "ganar_masa"], ingredientes: [{nombre: "Avena", gramos: 50}, {nombre: "Frutas", gramos: 100}] },
+            { nombre: "Tostadas con Aguacate", calorias: 250, proteinas: 5, carbohidratos: 30, grasas: 15, restricciones: ["vegano", "sin gluten"], tipo: "desayuno", objetivos: ["mantener_peso", "perder_peso"], ingredientes: [{nombre: "Tostadas", gramos: 60}, {nombre: "Aguacate", gramos: 100}] },
+            { nombre: "Pollo a la Parrilla con Arroz", calorias: 500, proteinas: 40, carbohidratos: 60, grasas: 10, restricciones: ["sin gluten"], tipo: "almuerzo", objetivos: ["mantener_peso", "ganar_masa"], ingredientes: [{nombre: "Pollo", gramos: 200}, {nombre: "Arroz", gramos: 150}] },
+            { nombre: "Lasaña de Berenjena", calorias: 400, proteinas: 30, carbohidratos: 30, grasas: 15, restricciones: ["vegetariano"], tipo: "almuerzo", objetivos: ["perder_peso", "mantener_peso"], ingredientes: [{nombre: "Berenjena", gramos: 200}, {nombre: "Queso", gramos: 100}] },
+            // Más recetas...
         ];
 
-        // Función para generar automáticamente el menú completo del día
+        // Función para generar automáticamente el menú completo del día con botón para información nutricional
         function generarMenuAutomatico(caloriasDiarias, restriccionesUsuario, objetivo) {
             const comidasDiarias = ['desayuno', 'almuerzo', 'cena', 'snack'];
-            let menuCompleto = `<h3>Menú del día:</h3><ul>`;
+            let menuCompleto = `<h3>Menú del día:</h3><div class="menu-container">`;
 
             comidasDiarias.forEach(comida => {
                 const recetasFiltradas = recetas.filter(receta => {
@@ -258,13 +275,26 @@
 
                 if (recetasFiltradas.length > 0) {
                     const recetaSeleccionada = recetasFiltradas[Math.floor(Math.random() * recetasFiltradas.length)];
-                    menuCompleto += `<li><strong>${comida.charAt(0).toUpperCase() + comida.slice(1)}:</strong> ${recetaSeleccionada.nombre} (${recetaSeleccionada.calorias} calorías)</li>`;
+                    menuCompleto += `
+                        <div>
+                            <p><strong>${comida.charAt(0).toUpperCase() + comida.slice(1)}:</strong> ${recetaSeleccionada.nombre} (${recetaSeleccionada.calorias} calorías)</p>
+                            <button class="toggle-button">Ver información nutricional</button>
+                            <div class="nutrition-info">
+                                <p><strong>Proteínas:</strong> ${recetaSeleccionada.proteinas} g</p>
+                                <p><strong>Carbohidratos:</strong> ${recetaSeleccionada.carbohidratos} g</p>
+                                <p><strong>Grasas:</strong> ${recetaSeleccionada.grasas} g</p>
+                                <p><strong>Ingredientes:</strong></p>
+                                <ul>
+                                    ${recetaSeleccionada.ingredientes.map(ing => `<li>${ing.nombre}: ${ing.gramos}g</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>`;
                 } else {
-                    menuCompleto += `<li><strong>${comida.charAt(0).toUpperCase() + comida.slice(1)}:</strong> No hay opciones disponibles para tus restricciones.</li>`;
+                    menuCompleto += `<p><strong>${comida.charAt(0).toUpperCase() + comida.slice(1)}:</strong> No hay opciones disponibles para tus restricciones.</p>`;
                 }
             });
 
-            menuCompleto += `</ul>`;
+            menuCompleto += `</div>`;
             return menuCompleto;
         }
 
@@ -274,7 +304,6 @@
             nutricionForm.addEventListener("submit", function(event) {
                 event.preventDefault();
 
-                // Obtener los datos del formulario
                 const nombre = document.getElementById("nombre").value;
                 const edad = document.getElementById("edad").value;
                 const peso = document.getElementById("peso").value;
@@ -283,10 +312,7 @@
                 const objetivo = document.getElementById("objetivo").value;
                 const restricciones = document.getElementById("restricciones").value;
 
-                // Calcular BMR (Tasa Metabólica Basal)
                 const bmr = calcularTMB(peso, altura, edad, genero);
-
-                // Calcular las calorías diarias dependiendo del objetivo
                 let caloriasDiarias;
                 if (objetivo === "perder_peso") {
                     caloriasDiarias = bmr * 1.2 - 500;
@@ -296,19 +322,25 @@
                     caloriasDiarias = bmr * 1.2;
                 }
 
-                // Mostrar el consumo de agua recomendado
                 const ingestaAgua = calcularIngestaAgua(peso);
                 const resultadoAgua = document.getElementById("resultadoAgua");
                 if (resultadoAgua) {
                     resultadoAgua.textContent = `Te recomendamos beber ${ingestaAgua} litros de agua al día.`;
                 }
 
-                // Generar el menú automáticamente
                 const menuGenerado = generarMenuAutomatico(caloriasDiarias, restricciones, objetivo);
                 const resultadoDieta = document.getElementById("resultadoDieta");
                 if (resultadoDieta) {
                     resultadoDieta.innerHTML = menuGenerado;
                 }
+
+                // Asignar comportamiento a los botones para ver la información nutricional
+                document.querySelectorAll('.toggle-button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const info = button.nextElementSibling;
+                        info.style.display = info.style.display === 'block' ? 'none' : 'block';
+                    });
+                });
             });
         }
 
@@ -322,7 +354,6 @@
                 const medidaCintura = document.getElementById("medidaCintura").value;
                 const medidaCadera = document.getElementById("medidaCadera").value;
 
-                // Guardar el progreso en el localStorage usando el DNI como clave
                 const progresoUsuario = {
                     peso,
                     medidaCintura,
@@ -334,7 +365,6 @@
                 progresos.push(progresoUsuario);
                 localStorage.setItem(dni, JSON.stringify(progresos));
 
-                // Mostrar el gráfico de progreso
                 mostrarGraficoProgreso(dni);
             });
         }
