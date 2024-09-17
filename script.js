@@ -40,7 +40,7 @@ const menu = {
         {nombre: "Media Mañana: Pan de centeno con aguacate", descripcion: "Tostada de pan de centeno con aguacate", calorias: 260, proteinas: 8, carbohidratos: 35, grasas: 10, ingredientes: [{nombre: "Pan de Centeno", gramos: 60}, {nombre: "Aguacate", gramos: 50}]},
         {nombre: "Merienda: Tarta de manzana light", descripcion: "Tarta casera de manzana con canela y almendras", calorias: 250, proteinas: 6, carbohidratos: 45, grasas: 8, ingredientes: [{nombre: "Manzana", gramos: 100}, {nombre: "Almendras", gramos: 20}, {nombre: "Canela", gramos: 5}]}
     ],
-        sabado: [
+    sabado: [
         {nombre: "Desayuno: Batido de avena y almendras", descripcion: "Batido de avena con almendras, leche y canela", calorias: 320, proteinas: 12, carbohidratos: 50, grasas: 10, ingredientes: [{nombre: "Avena", gramos: 50}, {nombre: "Almendras", gramos: 20}, {nombre: "Leche", gramos: 200}]},
         {nombre: "Almuerzo: Filete de ternera con ensalada", descripcion: "Filete de ternera a la plancha con ensalada de lechuga y zanahoria", calorias: 500, proteinas: 35, carbohidratos: 20, grasas: 25, ingredientes: [{nombre: "Ternera", gramos: 200}, {nombre: "Lechuga", gramos: 50}, {nombre: "Zanahoria", gramos: 50}]},
         {nombre: "Cena: Pollo al curry", descripcion: "Pechuga de pollo con salsa de curry y arroz integral", calorias: 450, proteinas: 30, carbohidratos: 50, grasas: 10, ingredientes: [{nombre: "Pollo", gramos: 200}, {nombre: "Arroz Integral", gramos: 100}, {nombre: "Curry", gramos: 5}]},
@@ -84,23 +84,36 @@ function generarMenu() {
     }
 }
 
+// Validación del formulario antes de enviar
+document.getElementById("user-form").addEventListener("submit", function(event) {
+    const dni = document.getElementById("dni").value;
+    const peso = document.getElementById("peso").value;
+    const altura = document.getElementById("altura").value;
+    const edad = document.getElementById("edad").value;
+    const objetivo = document.getElementById("objetivo").value;
+    
+    if (dni === "" || peso === "" || altura === "" || edad === "") {
+        alert("Por favor, complete todos los campos.");
+        event.preventDefault();
+    } else if (dni.length < 7 || dni.length > 8) {
+        alert("El DNI debe tener entre 7 y 8 caracteres.");
+        event.preventDefault();
+    } else if (peso <= 0 || altura <= 0 || edad <= 0) {
+        alert("Ingrese valores válidos en los campos de peso, altura y edad.");
+        event.preventDefault();
+    } else {
+        alert("Datos guardados correctamente.");
+    }
+});
+
 // Guardar el progreso de los datos del usuario mediante el DNI
 function guardarProgreso(dni, peso, altura, edad, objetivo, restricciones) {
-    const usuario = {
-        dni,
-        peso,
-        altura,
-        edad,
-        objetivo,
-        restricciones
-    };
-    
-    // Guardar los datos en el almacenamiento local (localStorage)
+    const usuario = { dni, peso, altura, edad, objetivo, restricciones };
     localStorage.setItem('progresoUsuario', JSON.stringify(usuario));
     console.log("Datos del usuario guardados:", usuario);
 }
 
-// Cargar el progreso del usuario al iniciar la página
+// Cargar el progreso al cargar la página
 window.onload = function() {
     const progresoGuardado = localStorage.getItem('progresoUsuario');
     if (progresoGuardado) {
@@ -114,7 +127,7 @@ window.onload = function() {
     }
 }
 
-// Función para manejar las restricciones alimentarias
+// Función para manejar restricciones alimentarias
 function obtenerRestricciones() {
     const restricciones = [];
     if (document.getElementById('sin-tacc').checked) restricciones.push('Sin TACC');
@@ -135,6 +148,5 @@ document.getElementById("user-form").addEventListener("submit", function(event) 
     const objetivo = document.getElementById('objetivo').value;
     const restricciones = obtenerRestricciones();
 
-    // Llamar a la función de guardar progreso
     guardarProgreso(dni, peso, altura, edad, objetivo, restricciones);
 });
