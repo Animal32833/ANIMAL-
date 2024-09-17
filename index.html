@@ -142,6 +142,7 @@
     </div>
 
     <script>
+        // Definimos los menús para cada día de la semana
         const menu = {
             lunes: [
                 {nombre: "Desayuno: Avena con frutas", descripcion: "Avena con manzana y frutos rojos", calorias: 350, proteinas: 12, carbohidratos: 55, grasas: 8, ingredientes: [{nombre: "Avena", gramos: 50}, {nombre: "Manzana", gramos: 100}]},
@@ -201,6 +202,7 @@
             ]
         };
 
+        // Función que genera el menú según el día seleccionado
         function generarMenu() {
             const dia = document.getElementById('dia-semana').value;
             const menuContainer = document.getElementById('menu-container');
@@ -228,3 +230,4 @@
     </script>
 </body>
 </html>
+
