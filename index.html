@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Librería para gráficas de progreso -->
     <script src="script.js" defer></script>
-<link rel="icon" href="data:,">
+    <link rel="icon" href="data:,">
 </head>
 <body>
     <header>
@@ -72,45 +72,56 @@
 
             <button type="submit">Generar Opciones de Comida</button>
         </form>
-<!-- Formulario para registrar el progreso -->
-<section id="progreso">
-    <h2>Registro de Progreso</h2>
-    <form id="progresoForm">
-        <label for="dni">DNI:</label>
-        <input type="text" id="dni" required>
 
-        <label for="peso">Peso (kg):</label>
-        <input type="number" id="peso" required>
-
-        <label for="medidaCintura">Medida de Cintura (cm):</label>
-        <input type="number" id="medidaCintura" required>
-
-        <label for="medidaCadera">Medida de Cadera (cm):</label>
-        <input type="number" id="medidaCadera">
-
-        <button type="submit">Registrar Progreso</button>
-    </form>
-</section>
-        
-<!-- Formulario para cargar el progreso guardado -->
-<section id="cargarProgreso">
-    <h2>Cargar Progreso por DNI</h2>
-    <form id="cargarProgresoForm">
-        <label for="dniCargar">DNI:</label>
-        <input type="text" id="dniCargar" required>
-        <button type="submit">Cargar Progreso</button>
-    </form>
-
-    <canvas id="graficoProgreso"></canvas> <!-- Aquí se mostrará el gráfico de progreso -->
-</section>
-
+        <!-- Opciones de comidas generadas -->
         <div id="opcionesComida"></div>
-
-      
-        <div id="resultadoDieta"></div>
     </section>
 
-    <!-- Seguimiento de Progreso -->
+    <!-- Menús personalizados -->
+    <section id="menus">
+        <h2>Opciones de Menú</h2>
+        
+        <div class="menu-container" data-diet="vegano">
+            <h3>Desayuno: Tostadas de Aguacate con Semillas</h3>
+            <p>Tostadas de pan integral con aguacate y semillas de chía.</p>
+            <button class="toggle-button">Ver información nutricional</button>
+            <div class="nutrition-info">
+                <p><strong>Calorías:</strong> 250 kcal</p>
+                <p><strong>Proteínas:</strong> 7 g</p>
+                <p><strong>Carbohidratos:</strong> 32 g</p>
+                <p><strong>Grasas:</strong> 11 g</p>
+                <p><strong>Ingredientes:</strong> Pan integral (50g), Aguacate (60g), Semillas de chía (5g)</p>
+            </div>
+        </div>
+
+        <div class="menu-container" data-diet="celiaco">
+            <h3>Almuerzo: Pollo al Horno con Batatas y Ensalada Verde</h3>
+            <p>Pollo asado con batatas y ensalada verde.</p>
+            <button class="toggle-button">Ver información nutricional</button>
+            <div class="nutrition-info">
+                <p><strong>Calorías:</strong> 500 kcal</p>
+                <p><strong>Proteínas:</strong> 35 g</p>
+                <p><strong>Carbohidratos:</strong> 45 g</p>
+                <p><strong>Grasas:</strong> 15 g</p>
+                <p><strong>Ingredientes:</strong> Pollo (150g), Batatas (200g), Ensalada verde (80g)</p>
+            </div>
+        </div>
+
+        <div class="menu-container" data-diet="bajoazucar">
+            <h3>Cena: Salmón con Espárragos y Arroz Integral</h3>
+            <p>Salmón al grill acompañado de espárragos y arroz integral.</p>
+            <button class="toggle-button">Ver información nutricional</button>
+            <div class="nutrition-info">
+                <p><strong>Calorías:</strong> 450 kcal</p>
+                <p><strong>Proteínas:</strong> 40 g</p>
+                <p><strong>Carbohidratos:</strong> 40 g</p>
+                <p><strong>Grasas:</strong> 15 g</p>
+                <p><strong>Ingredientes:</strong> Salmón (200g), Espárragos (100g), Arroz integral (50g)</p>
+            </div>
+        </div>
+
+    </section>
+
     <section id="progreso">
         <h2>Seguimiento de Progreso</h2>
         <form id="progresoForm">
@@ -126,21 +137,41 @@
             <button type="submit">Actualizar Progreso</button>
         </form>
 
-        <canvas id="graficoProgreso"></canvas> <!-- Aquí irá el gráfico de progreso -->
+        <canvas id="graficoProgreso"></canvas> <!-- Gráfico de progreso -->
     </section>
 
-    <!-- Galería de imágenes para la inspiración -->
-    <section id="gallery">
-        <h2>Imágenes inspiradoras</h2>
-        <div class="image-container">
-            <img src="gym1.png" alt="Entrenamiento con pesas">
-            <img src="gym2.png" alt="Cuidado corporal">
-            <img src="food.png" alt="Comida saludable">
-        </div>
-    </section>
+    <!-- Scripts -->
+    <script>
+        // Función para mostrar/ocultar información nutricional
+        document.querySelectorAll('.toggle-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const info = button.nextElementSibling;
+                info.style.display = info.style.display === 'block' ? 'none' : 'block';
+            });
+        });
 
-    <footer>
-        <p>&copy; 2024 ANIMAL Gym. Todos los derechos reservados.</p>
-    </footer>
+        // Función para calcular la TMB
+        function calcularTMB(peso, altura, edad, genero) {
+            if (genero === 'masculino') {
+                return Math.round(88.36 + (13.4 * peso) + (4.8 * altura) - (5.7 * edad));
+            } else {
+                return Math.round(447.6 + (9.2 * peso) + (3.1 * altura) - (4.3 * edad));
+            }
+        }
+
+        // Función para la recomendación de agua
+        function calcularIngestaAgua(peso) {
+            return (peso * 0.035).toFixed(2); // 35 ml por kg
+        }
+
+        // Ingresar resultados de TMB y agua en los campos apropiados
+        const peso = 70;  // Ejemplo de peso
+        const altura = 175;  // Ejemplo de altura
+        const edad = 30;  // Ejemplo de edad
+        const genero = 'masculino';  // Ejemplo de género
+
+        console.log(`Tu TMB es ${calcularTMB(peso, altura, edad, genero)} kcal.`);
+        console.log(`Te recomendamos beber ${calcularIngestaAgua(peso)} litros de agua al día.`);
+    </script>
 </body>
 </html>
