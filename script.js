@@ -1,3 +1,4 @@
+
 // Variable global para almacenar el gráfico de progreso
 let graficoProgreso;
 
@@ -14,6 +15,7 @@ function calcularTMB(peso, altura, edad, genero) {
 function calcularIngestaAgua(peso) {
     return (peso * 0.035).toFixed(2); // 35 ml por kg de peso
 }
+
 
 // Base de datos de recetas con restricciones alimenticias y objetivos de nutrición, con acompañamientos
 const recetas = [
@@ -56,10 +58,10 @@ const recetas = [
     { nombre: "Nueces Mixtas", calorias: 250, proteinas: 5, carbohidratos: 10, grasas: 20, restricciones: ["vegano", "sin gluten"], tipo: "snack", objetivos: ["mantener_peso", "ganar_masa"] }
 ];
 
-// Función para generar automáticamente el menú completo del día
+// Función para generar automáticamente el menú completo del día con botón para información nutricional
 function generarMenuAutomatico(caloriasDiarias, restriccionesUsuario, objetivo) {
     const comidasDiarias = ['desayuno', 'almuerzo', 'cena', 'snack'];
-    let menuCompleto = `<h3>Menú del día:</h3><ul>`;
+    let menuCompleto = `<h3>Menú del día:</h3><div class="menu-container">`;
 
     comidasDiarias.forEach(comida => {
         const recetasFiltradas = recetas.filter(receta => {
@@ -72,103 +74,96 @@ function generarMenuAutomatico(caloriasDiarias, restriccionesUsuario, objetivo) 
 
         if (recetasFiltradas.length > 0) {
             const recetaSeleccionada = recetasFiltradas[Math.floor(Math.random() * recetasFiltradas.length)];
-            menuCompleto += `<li><strong>${comida.charAt(0).toUpperCase() + comida.slice(1)}:</strong> ${recetaSeleccionada.nombre} (${recetaSeleccionada.calorias} calorías)`;
-            if (recetaSeleccionada.acompanamiento) {
-                menuCompleto += `, acompañado de ${recetaSeleccionada.acompanamiento}`;
-            }
-            menuCompleto += `</li>`;
+            menuCompleto += `
+                <div>
+                    <p><strong>${comida.charAt(0).toUpperCase() + comida.slice(1)}:</strong> ${recetaSeleccionada.nombre} (${recetaSeleccionada.calorias} calorías)</p>
+                    <button class="toggle-button">Ver información nutricional</button>
+                    <div class="nutrition-info" style="display: none;">
+                        <p><strong>Proteínas:</strong> ${recetaSeleccionada.proteinas} g</p>
+                        <p><strong>Carbohidratos:</strong> ${recetaSeleccionada.carbohidratos} g</p>
+                        <p><strong>Grasas:</strong> ${recetaSeleccionada.grasas} g</p>
+                        <p><strong>Ingredientes:</strong></p>
+                        <ul>
+                            ${recetaSeleccionada.ingredientes.map(ing => `<li>${ing.nombre}: ${ing.gramos}g</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>`;
         } else {
-            menuCompleto += `<li><strong>${comida.charAt(0).toUpperCase() + comida.slice(1)}:</strong> No hay opciones disponibles para tus restricciones.</li>`;
+            menuCompleto += `<p><strong>${comida.charAt(0).toUpperCase() + comida.slice(1)}:</strong> No hay opciones disponibles para tus restricciones.</p>`;
         }
     });
 
-    menuCompleto += `</ul>`;
+    menuCompleto += `</div>`;
     return menuCompleto;
 }
 
-// Función para manejar el envío del formulario de nutrición
+// Manejar el envío del formulario de nutrición
 const nutricionForm = document.getElementById("nutricionForm");
 if (nutricionForm) {
     nutricionForm.addEventListener("submit", function(event) {
         event.preventDefault();
 
-        // Obtener los datos del formulario
-        const nombreField = document.getElementById("nombre");
-        const edadField = document.getElementById("edad");
-        const pesoField = document.getElementById("peso");
-        const alturaField = document.getElementById("altura");
-        const generoField = document.getElementById("genero");
-        const objetivoField = document.getElementById("objetivo");
-        const restriccionesField = document.getElementById("restricciones");
+        const nombre = document.getElementById("nombre").value;
+        const edad = document.getElementById("edad").value;
+        const peso = document.getElementById("peso").value;
+        const altura = document.getElementById("altura").value;
+        const genero = document.getElementById("genero").value;
+        const objetivo = document.getElementById("objetivo").value;
+        const restricciones = document.getElementById("restricciones").value;
 
-        if (nombreField && edadField && pesoField && alturaField && generoField && objetivoField && restriccionesField) {
-            const nombre = nombreField.value;
-            const edad = edadField.value;
-            const peso = pesoField.value;
-            const altura = alturaField.value;
-            const genero = generoField.value;
-            const objetivo = objetivoField.value;
-            const restricciones = restriccionesField.value;
-
-            // Calcular BMR (Tasa Metabólica Basal)
-            const bmr = calcularTMB(peso, altura, edad, genero);
-
-            // Calcular las calorías diarias dependiendo del objetivo
-            let caloriasDiarias;
-            if (objetivo === "perder_peso") {
-                caloriasDiarias = bmr * 1.2 - 500;
-            } else if (objetivo === "ganar_masa") {
-                caloriasDiarias = bmr * 1.5 + 300;
-            } else {
-                caloriasDiarias = bmr * 1.2;
-            }
-
-            // Mostrar el consumo de agua recomendado
-            const ingestaAgua = calcularIngestaAgua(peso);
-            console.log(`Tu TMB es ${bmr} kcal.`);
-            console.log(`Te recomendamos beber ${ingestaAgua} litros de agua al día.`);
-            
-            const resultadoAgua = document.getElementById("resultadoAgua");
-            if (resultadoAgua) {
-                resultadoAgua.textContent = `Te recomendamos beber ${ingestaAgua} litros de agua al día.`;
-            }
-
-            // Generar el menú automáticamente
-            const menuGenerado = generarMenuAutomatico(caloriasDiarias, restricciones, objetivo);
-            const resultadoDieta = document.getElementById("resultadoDieta");
-            if (resultadoDieta) {
-                resultadoDieta.innerHTML = menuGenerado;
-            }
+        const bmr = calcularTMB(peso, altura, edad, genero);
+        let caloriasDiarias;
+        if (objetivo === "perder_peso") {
+            caloriasDiarias = bmr * 1.2 - 500;
+        } else if (objetivo === "ganar_masa") {
+            caloriasDiarias = bmr * 1.5 + 300;
         } else {
-            console.error("Algunos de los campos del formulario no se encontraron en el DOM.");
+            caloriasDiarias = bmr * 1.2;
         }
+
+        const ingestaAgua = calcularIngestaAgua(peso);
+        const resultadoAgua = document.getElementById("resultadoAgua");
+        if (resultadoAgua) {
+            resultadoAgua.textContent = `Te recomendamos beber ${ingestaAgua} litros de agua al día.`;
+        }
+
+        const menuGenerado = generarMenuAutomatico(caloriasDiarias, restricciones, objetivo);
+        const resultadoDieta = document.getElementById("resultadoDieta");
+        if (resultadoDieta) {
+            resultadoDieta.innerHTML = menuGenerado;
+        }
+
+        // Asignar comportamiento a los botones para ver la información nutricional
+        document.querySelectorAll('.toggle-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const info = button.nextElementSibling;
+                info.style.display = info.style.display === 'block' ? 'none' : 'block';
+            });
+        });
     });
 }
 
-// Función para manejar el envío del formulario de progreso y guardarlo en localStorage
+// Función para manejar el progreso
 const progresoForm = document.getElementById("progresoForm");
 if (progresoForm) {
     progresoForm.addEventListener("submit", function(event) {
         event.preventDefault();
-
         const dni = document.getElementById("dni").value;
         const peso = document.getElementById("peso").value;
         const medidaCintura = document.getElementById("medidaCintura").value;
         const medidaCadera = document.getElementById("medidaCadera").value;
 
-        // Guardar el progreso en el localStorage, usando el DNI como clave
         const progresoUsuario = {
-            peso: peso,
-            medidaCintura: medidaCintura,
-            medidaCadera: medidaCadera,
-            fecha: new Date().toLocaleDateString() // Fecha del registro
+            peso,
+            medidaCintura,
+            medidaCadera,
+            fecha: new Date().toLocaleDateString()
         };
 
         let progresos = JSON.parse(localStorage.getItem(dni)) || [];
         progresos.push(progresoUsuario);
         localStorage.setItem(dni, JSON.stringify(progresos));
 
-        // Mostrar el progreso en el gráfico
         mostrarGraficoProgreso(dni);
     });
 }
@@ -176,7 +171,6 @@ if (progresoForm) {
 // Función para cargar y mostrar el gráfico de progreso del usuario
 function mostrarGraficoProgreso(dni) {
     const progresos = JSON.parse(localStorage.getItem(dni)) || [];
-
     const datosProgreso = {
         labels: progresos.map((progreso, index) => `Registro ${index + 1}`),
         datasets: [{
@@ -187,11 +181,10 @@ function mostrarGraficoProgreso(dni) {
         }]
     };
 
+    const ctx = document.getElementById('graficoProgreso');
     if (graficoProgreso) {
         graficoProgreso.destroy();
     }
-
-    const ctx = document.getElementById('graficoProgreso');
     if (ctx) {
         graficoProgreso = new Chart(ctx.getContext('2d'), {
             type: 'line',
@@ -208,7 +201,7 @@ function mostrarGraficoProgreso(dni) {
     }
 }
 
-// Función para cargar el progreso del usuario al ingresar el DNI
+// Cargar el progreso por DNI
 const cargarProgresoForm = document.getElementById("cargarProgresoForm");
 if (cargarProgresoForm) {
     cargarProgresoForm.addEventListener("submit", function(event) {
