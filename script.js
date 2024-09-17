@@ -83,15 +83,12 @@ document.getElementById("user-form").addEventListener("submit", function(event) 
     }
 });
 
-// Función para generar el menú personalizado según el día seleccionado
 function generarMenu() {
     const dia = document.getElementById('dia-semana').value;
     const menuContainer = document.getElementById('menu-container');
     menuContainer.innerHTML = ''; // Limpiar el contenido anterior
 
-    // Verificamos si el menú del día existe
     if (menu[dia]) {
-        // Iteramos sobre cada comida del día
         menu[dia].forEach(plato => {
             const platoHTML = `
                 <div class="comida">
@@ -101,16 +98,16 @@ function generarMenu() {
                     <p>Proteínas: ${plato.proteinas}g</p>
                     <p>Carbohidratos: ${plato.carbohidratos}g</p>
                     <p>Grasas: ${plato.grasas}g</p>
-                    <p>Ingredientes: ${plato.ingredientes.map(i => \`\${i.nombre} (\${i.gramos}g)\`).join(', ')}</p>
+                    <p>Ingredientes: ${plato.ingredientes.map(i => `${i.nombre} (${i.gramos}g)`).join(', ')}</p>
                 </div>
             `;
-            // Agregamos cada plato al contenedor de menús
             menuContainer.innerHTML += platoHTML;
         });
     } else {
         menuContainer.innerHTML = "<p>No hay menú disponible para este día.</p>";
     }
 }
+
 
 // Guardar el progreso de los datos del usuario mediante el DNI
 function guardarProgreso(dni, peso, altura, edad, objetivo, restricciones) {
