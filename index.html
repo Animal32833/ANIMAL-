@@ -142,36 +142,39 @@
 
     <!-- Scripts -->
     <script>
-        // Función para mostrar/ocultar información nutricional
-        document.querySelectorAll('.toggle-button').forEach(button => {
-            button.addEventListener('click', () => {
-                const info = button.nextElementSibling;
-                info.style.display = info.style.display === 'block' ? 'none' : 'block';
+        document.addEventListener("DOMContentLoaded", function() {
+            // Función para mostrar/ocultar información nutricional
+            document.querySelectorAll('.toggle-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const info = button.nextElementSibling;
+                    info.style.display = info.style.display === 'block' ? 'none' : 'block';
+                });
             });
-        });
 
-        // Función para calcular la TMB
-        function calcularTMB(peso, altura, edad, genero) {
-            if (genero === 'masculino') {
-                return Math.round(88.36 + (13.4 * peso) + (4.8 * altura) - (5.7 * edad));
-            } else {
-                return Math.round(447.6 + (9.2 * peso) + (3.1 * altura) - (4.3 * edad));
+            // Función para calcular la TMB
+            function calcularTMB(peso, altura, edad, genero) {
+                if (genero === 'masculino') {
+                    return Math.round(88.36 + (13.4 * peso) + (4.8 * altura) - (5.7 * edad));
+                } else {
+                    return Math.round(447.6 + (9.2 * peso) + (3.1 * altura) - (4.3 * edad));
+                }
             }
-        }
 
-        // Función para la recomendación de agua
-        function calcularIngestaAgua(peso) {
-            return (peso * 0.035).toFixed(2); // 35 ml por kg
-        }
+            // Función para la recomendación de agua
+            function calcularIngestaAgua(peso) {
+                return (peso * 0.035).toFixed(2); // 35 ml por kg
+            }
 
-        // Ingresar resultados de TMB y agua en los campos apropiados
-        const peso = 70;  // Ejemplo de peso
-        const altura = 175;  // Ejemplo de altura
-        const edad = 30;  // Ejemplo de edad
-        const genero = 'masculino';  // Ejemplo de género
+            // Ejemplos para pruebas
+            const peso = 70;  // Ejemplo de peso
+            const altura = 175;  // Ejemplo de altura
+            const edad = 30;  // Ejemplo de edad
+            const genero = 'masculino';  // Ejemplo de género
 
-        console.log(`Tu TMB es ${calcularTMB(peso, altura, edad, genero)} kcal.`);
-        console.log(`Te recomendamos beber ${calcularIngestaAgua(peso)} litros de agua al día.`);
+            console.log(`Tu TMB es ${calcularTMB(peso, altura, edad, genero)} kcal.`);
+            console.log(`Te recomendamos beber ${calcularIngestaAgua(peso)} litros de agua al día.`);
+        });
     </script>
 </body>
 </html>
+
