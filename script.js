@@ -19,44 +19,365 @@ function calcularIngestaAgua(peso) {
 
 // Base de datos de recetas con restricciones alimenticias y objetivos de nutrición, con acompañamientos
 const recetas = [
-    // Desayunos
-    { nombre: "Avena con Frutas", calorias: 350, proteinas: 10, carbohidratos: 60, grasas: 5, restricciones: ["sin gluten", "vegetariano"], tipo: "desayuno", objetivos: ["mantener_peso", "ganar_masa"] },
-    { nombre: "Tostadas con Aguacate", calorias: 250, proteinas: 5, carbohidratos: 30, grasas: 15, restricciones: ["vegano", "sin gluten"], tipo: "desayuno", objetivos: ["mantener_peso", "perder_peso"] },
-    { nombre: "Batido de Proteínas con Plátano", calorias: 300, proteinas: 25, carbohidratos: 30, grasas: 10, restricciones: ["sin gluten", "vegetariano"], tipo: "desayuno", objetivos: ["ganar_masa"] },
-    { nombre: "Tortilla de Claras con Espinaca", calorias: 200, proteinas: 20, carbohidratos: 5, grasas: 5, restricciones: ["sin gluten", "vegetariano"], tipo: "desayuno", objetivos: ["mantener_peso", "perder_peso"] },
-    { nombre: "Smoothie de Fresas y Yogur", calorias: 150, proteinas: 10, carbohidratos: 30, grasas: 2, restricciones: ["sin gluten"], tipo: "desayuno", objetivos: ["perder_peso"] },
-    { nombre: "Pan Integral con Mermelada", calorias: 180, proteinas: 6, carbohidratos: 35, grasas: 3, restricciones: ["vegetariano"], tipo: "desayuno", objetivos: ["mantener_peso"] },
-    { nombre: "Huevos Revueltos con Jamón", calorias: 300, proteinas: 20, carbohidratos: 5, grasas: 20, restricciones: ["sin gluten"], tipo: "desayuno", objetivos: ["ganar_masa"] },
-    { nombre: "Porridge de Avena con Frutos Rojos", calorias: 350, proteinas: 12, carbohidratos: 60, grasas: 5, restricciones: ["vegetariano"], tipo: "desayuno", objetivos: ["mantener_peso", "ganar_masa"] },
-    { nombre: "Yogur Griego con Miel", calorias: 250, proteinas: 15, carbohidratos: 30, grasas: 5, restricciones: ["vegetariano"], tipo: "desayuno", objetivos: ["mantener_peso", "ganar_masa"] },
-    { nombre: "Bagel Integral con Queso Crema", calorias: 400, proteinas: 15, carbohidratos: 60, grasas: 15, restricciones: ["vegetariano"], tipo: "desayuno", objetivos: ["ganar_masa"] },
+ // Desayunos
+{ 
+    nombre: "Avena con Frutas", 
+    calorias: 350, proteinas: 10, carbohidratos: 60, grasas: 5, 
+    restricciones: ["sin gluten", "vegetariano"], 
+    tipo: "desayuno", 
+    objetivos: ["mantener_peso", "ganar_masa"], 
+    ingredientes: [
+        { nombre: "Avena", gramos: 50 }, 
+        { nombre: "Frutas Mixtas", gramos: 100 }
+    ] 
+},
+{ 
+    nombre: "Tostadas con Aguacate", 
+    calorias: 250, proteinas: 5, carbohidratos: 30, grasas: 15, 
+    restricciones: ["vegano", "sin gluten"], 
+    tipo: "desayuno", 
+    objetivos: ["mantener_peso", "perder_peso"], 
+    ingredientes: [
+        { nombre: "Tostadas Integrales", gramos: 60 }, 
+        { nombre: "Aguacate", gramos: 100 }
+    ]
+},
+{ 
+    nombre: "Batido de Proteínas con Plátano", 
+    calorias: 300, proteinas: 25, carbohidratos: 30, grasas: 10, 
+    restricciones: ["sin gluten", "vegetariano"], 
+    tipo: "desayuno", 
+    objetivos: ["ganar_masa"], 
+    ingredientes: [
+        { nombre: "Proteína en Polvo", gramos: 30 }, 
+        { nombre: "Plátano", gramos: 100 }, 
+        { nombre: "Leche Almendra", mililitros: 250 }
+    ] 
+},
+{ 
+    nombre: "Tortilla de Claras con Espinaca", 
+    calorias: 200, proteinas: 20, carbohidratos: 5, grasas: 5, 
+    restricciones: ["sin gluten", "vegetariano"], 
+    tipo: "desayuno", 
+    objetivos: ["mantener_peso", "perder_peso"], 
+    ingredientes: [
+        { nombre: "Claras de Huevo", gramos: 100 }, 
+        { nombre: "Espinaca", gramos: 50 }
+    ] 
+},
+{ 
+    nombre: "Smoothie de Fresas y Yogur", 
+    calorias: 150, proteinas: 10, carbohidratos: 30, grasas: 2, 
+    restricciones: ["sin gluten"], 
+    tipo: "desayuno", 
+    objetivos: ["perder_peso"], 
+    ingredientes: [
+        { nombre: "Fresas", gramos: 100 }, 
+        { nombre: "Yogur", gramos: 100 }, 
+        { nombre: "Leche Almendra", mililitros: 250 }
+    ] 
+},
+{ 
+    nombre: "Pan Integral con Mermelada", 
+    calorias: 180, proteinas: 6, carbohidratos: 35, grasas: 3, 
+    restricciones: ["vegetariano"], 
+    tipo: "desayuno", 
+    objetivos: ["mantener_peso"], 
+    ingredientes: [
+        { nombre: "Pan Integral", gramos: 60 }, 
+        { nombre: "Mermelada sin Azúcar", gramos: 30 }
+    ] 
+},
+{ 
+    nombre: "Huevos Revueltos con Jamón", 
+    calorias: 300, proteinas: 20, carbohidratos: 5, grasas: 20, 
+    restricciones: ["sin gluten"], 
+    tipo: "desayuno", 
+    objetivos: ["ganar_masa"], 
+    ingredientes: [
+        { nombre: "Huevos", unidades: 2 }, 
+        { nombre: "Jamón de Pavo", gramos: 50 }
+    ]
+},
+{ 
+    nombre: "Porridge de Avena con Frutos Rojos", 
+    calorias: 350, proteinas: 12, carbohidratos: 60, grasas: 5, 
+    restricciones: ["vegetariano"], 
+    tipo: "desayuno", 
+    objetivos: ["mantener_peso", "ganar_masa"], 
+    ingredientes: [
+        { nombre: "Avena", gramos: 50 }, 
+        { nombre: "Frutos Rojos", gramos: 80 }
+    ]
+},
+{ 
+    nombre: "Yogur Griego con Miel", 
+    calorias: 250, proteinas: 15, carbohidratos: 30, grasas: 5, 
+    restricciones: ["vegetariano"], 
+    tipo: "desayuno", 
+    objetivos: ["mantener_peso", "ganar_masa"], 
+    ingredientes: [
+        { nombre: "Yogur Griego", gramos: 150 }, 
+        { nombre: "Miel", gramos: 20 }
+    ]
+},
+{ 
+    nombre: "Bagel Integral con Queso Crema", 
+    calorias: 400, proteinas: 15, carbohidratos: 60, grasas: 15, 
+    restricciones: ["vegetariano"], 
+    tipo: "desayuno", 
+    objetivos: ["ganar_masa"], 
+    ingredientes: [
+        { nombre: "Bagel Integral", gramos: 100 }, 
+        { nombre: "Queso Crema", gramos: 50 }
+    ]
+},
 
-    // Almuerzos
-    { nombre: "Pollo a la Parrilla con Arroz", calorias: 500, proteinas: 40, carbohidratos: 60, grasas: 10, restricciones: ["sin gluten"], tipo: "almuerzo", objetivos: ["mantener_peso", "ganar_masa"], acompanamiento: "Ensalada de verduras" },
-    { nombre: "Ensalada de Quinoa y Vegetales", calorias: 400, proteinas: 15, carbohidratos: 60, grasas: 10, restricciones: ["vegano", "sin gluten"], tipo: "almuerzo", objetivos: ["perder_peso", "mantener_peso"], acompanamiento: "Pan sin gluten" },
-    { nombre: "Wrap de Pollo", calorias: 450, proteinas: 35, carbohidratos: 45, grasas: 15, restricciones: ["sin gluten"], tipo: "almuerzo", objetivos: ["mantener_peso", "ganar_masa"], acompanamiento: "Papas asadas" },
-    { nombre: "Tacos de Pavo con Guacamole", calorias: 500, proteinas: 40, carbohidratos: 50, grasas: 15, restricciones: ["sin gluten"], tipo: "almuerzo", objetivos: ["ganar_masa"], acompanamiento: "Arroz integral" },
-    { nombre: "Bowl de Atún con Vegetales", calorias: 450, proteinas: 40, carbohidratos: 40, grasas: 15, restricciones: ["sin gluten"], tipo: "almuerzo", objetivos: ["mantener_peso", "ganar_masa"], acompanamiento: "Ensalada mixta" },
-    { nombre: "Lasaña de Berenjena", calorias: 400, proteinas: 30, carbohidratos: 30, grasas: 15, restricciones: ["vegetariano"], tipo: "almuerzo", objetivos: ["perder_peso", "mantener_peso"], acompanamiento: "Pan integral" },
-    { nombre: "Pechuga de Pavo con Verduras", calorias: 350, proteinas: 45, carbohidratos: 20, grasas: 10, restricciones: ["sin gluten"], tipo: "almuerzo", objetivos: ["perder_peso", "mantener_peso"], acompanamiento: "Puré de batatas" },
-    { nombre: "Arroz Integral con Frijoles", calorias: 450, proteinas: 15, carbohidratos: 80, grasas: 5, restricciones: ["vegano", "sin gluten"], tipo: "almuerzo", objetivos: ["mantener_peso"], acompanamiento: "Ensalada verde" },
-    { nombre: "Sándwich de Pollo a la Parrilla", calorias: 500, proteinas: 35, carbohidratos: 50, grasas: 15, restricciones: ["sin gluten"], tipo: "almuerzo", objetivos: ["mantener_peso", "ganar_masa"], acompanamiento: "Papas horneadas" },
-    { nombre: "Hamburguesa de Lentejas", calorias: 400, proteinas: 20, carbohidratos: 60, grasas: 10, restricciones: ["vegano", "sin gluten"], tipo: "almuerzo", objetivos: ["mantener_peso", "perder_peso"], acompanamiento: "Puré de papa" },
+// Almuerzos
+{ 
+    nombre: "Pollo a la Parrilla con Arroz", 
+    calorias: 500, proteinas: 40, carbohidratos: 60, grasas: 10, 
+    restricciones: ["sin gluten"], 
+    tipo: "almuerzo", 
+    objetivos: ["mantener_peso", "ganar_masa"], 
+    acompanamiento: "Ensalada de verduras", 
+    ingredientes: [
+        { nombre: "Pollo", gramos: 200 }, 
+        { nombre: "Arroz", gramos: 150 }
+    ]
+},
+{ 
+    nombre: "Ensalada de Quinoa y Vegetales", 
+    calorias: 400, proteinas: 15, carbohidratos: 60, grasas: 10, 
+    restricciones: ["vegano", "sin gluten"], 
+    tipo: "almuerzo", 
+    objetivos: ["perder_peso", "mantener_peso"], 
+    acompanamiento: "Pan sin gluten", 
+    ingredientes: [
+        { nombre: "Quinoa", gramos: 100 }, 
+        { nombre: "Vegetales", gramos: 150 }
+    ]
+},
+{ 
+    nombre: "Wrap de Pollo", 
+    calorias: 450, proteinas: 35, carbohidratos: 45, grasas: 15, 
+    restricciones: ["sin gluten"], 
+    tipo: "almuerzo", 
+    objetivos: ["mantener_peso", "ganar_masa"], 
+    acompanamiento: "Papas asadas", 
+    ingredientes: [
+        { nombre: "Pollo", gramos: 100 }, 
+        { nombre: "Tortilla de maíz", gramos: 50 }, 
+        { nombre: "Lechuga", gramos: 30 }
+    ]
+},
+{ 
+    nombre: "Tacos de Pavo con Guacamole", 
+    calorias: 500, proteinas: 40, carbohidratos: 50, grasas: 15, 
+    restricciones: ["sin gluten"], 
+    tipo: "almuerzo", 
+    objetivos: ["ganar_masa"], 
+    acompanamiento: "Arroz integral", 
+    ingredientes: [
+        { nombre: "Pavo", gramos: 100 }, 
+        { nombre: "Guacamole", gramos: 50 }, 
+        { nombre: "Tortillas de maíz", unidades: 2 }
+    ]
+},
+{ 
+    nombre: "Bowl de Atún con Vegetales", 
+    calorias: 450, proteinas: 40, carbohidratos: 40, grasas: 15, 
+    restricciones: ["sin gluten"], 
+    tipo: "almuerzo", 
+    objetivos: ["mantener_peso", "ganar_masa"], 
+    acompanamiento: "Ensalada mixta", 
+    ingredientes: [
+        { nombre: "Atún", gramos: 150 }, 
+        { nombre: "Arroz integral", gramos: 100 }, 
+        { nombre: "Vegetales", gramos: 100 }
+    ]
+},
+{ 
+    nombre: "Lasaña de Berenjena", 
+    calorias: 400, proteinas: 30, carbohidratos: 30, grasas: 15, 
+    restricciones: ["vegetariano"], 
+    tipo: "almuerzo", 
+    objetivos: ["perder_peso", "mantener_peso"], 
+    acompanamiento: "Pan integral", 
+    ingredientes: [
+        { nombre: "Berenjena", gramos: 150 }, 
+        { nombre: "Queso", gramos: 100 }
+    ]
+},
+{ 
+    nombre: "Pechuga de Pavo con Verduras", 
+    calorias: 350, proteinas: 45, carbohidratos: 20, grasas: 10, 
+    restricciones: ["sin gluten"], 
+    tipo: "almuerzo", 
+    objetivos: ["perder_peso", "mantener_peso"], 
+    acompanamiento: "Puré de batatas", 
+    ingredientes: [
+        { nombre: "Pechuga de pavo", gramos: 150 }, 
+        { nombre: "Batatas", gramos: 100 }
+    ]
+},
+{ 
+    nombre: "Arroz Integral con Frijoles", 
+    calorias: 450, proteinas: 15, carbohidratos: 80, grasas: 5, 
+    restricciones: ["vegano", "sin gluten"], 
+    tipo: "almuerzo", 
+    objetivos: ["mantener_peso"], 
+    acompanamiento: "Ensalada verde", 
+    ingredientes: [
+        { nombre: "Arroz Integral", gramos: 100 }, 
+        { nombre: "Frijoles", gramos: 100 }
+    ]
+},
+{ 
+    nombre: "Sándwich de Pollo a la Parrilla", 
+    calorias: 500, proteinas: 35, carbohidratos: 50, grasas: 15, 
+    restricciones: ["sin gluten"], 
+    tipo: "almuerzo", 
+    objetivos: ["mantener_peso", "ganar_masa"], 
+    acompanamiento: "Papas horneadas", 
+    ingredientes: [
+        { nombre: "Pollo", gramos: 100 }, 
+        { nombre: "Pan sin gluten", gramos: 50 }, 
+        { nombre: "Lechuga", gramos: 30 }
+    ]
+},
+{ 
+    nombre: "Hamburguesa de Lentejas", 
+    calorias: 400, proteinas: 20, carbohidratos: 60, grasas: 10, 
+    restricciones: ["vegano", "sin gluten"], 
+    tipo: "almuerzo", 
+    objetivos: ["mantener_peso", "perder_peso"], 
+    acompanamiento: "Puré de papa", 
+    ingredientes: [
+        { nombre: "Lentejas", gramos: 150 }, 
+        { nombre: "Pan sin gluten", gramos: 50 }
+    ]
+},
 
-    // Cenas
-    { nombre: "Salmón al Horno", calorias: 450, proteinas: 40, carbohidratos: 5, grasas: 30, restricciones: ["sin gluten", "pescatariano"], tipo: "cena", objetivos: ["mantener_peso", "ganar_masa"], acompanamiento: "Espárragos asados" },
-    { nombre: "Tofu Salteado con Verduras", calorias: 350, proteinas: 20, carbohidratos: 30, grasas: 10, restricciones: ["vegano", "sin gluten"], tipo: "cena", objetivos: ["perder_peso", "mantener_peso"], acompanamiento: "Arroz integral" },
-    { nombre: "Pechuga de Pollo Asada", calorias: 400, proteinas: 45, carbohidratos: 20, grasas: 10, restricciones: ["sin gluten"], tipo: "cena", objetivos: ["mantener_peso", "ganar_masa"], acompanamiento: "Verduras al vapor" },
-    { nombre: "Pizza de Coliflor", calorias: 400, proteinas: 20, carbohidratos: 40, grasas: 15, restricciones: ["vegetariano", "sin gluten"], tipo: "cena", objetivos: ["mantener_peso", "perder_peso"], acompanamiento: "Ensalada mixta" },
-    { nombre: "Tilapia al Limón", calorias: 300, proteinas: 35, carbohidratos: 5, grasas: 15, restricciones: ["sin gluten", "pescatariano"], tipo: "cena", objetivos: ["mantener_peso", "perder_peso"], acompanamiento: "Arroz integral" },
+// Cenas
+{ 
+    nombre: "Salmón al Horno", 
+    calorias: 450, proteinas: 40, carbohidratos: 5, grasas: 30, 
+    restricciones: ["sin gluten", "pescatariano"], 
+    tipo: "cena", 
+    objetivos: ["mantener_peso", "ganar_masa"], 
+    acompanamiento: "Espárragos asados", 
+    ingredientes: [
+        { nombre: "Salmón", gramos: 150 }, 
+        { nombre: "Espárragos", gramos: 100 }
+    ]
+},
+{ 
+    nombre: "Tofu Salteado con Verduras", 
+    calorias: 350, proteinas: 20, carbohidratos: 30, grasas: 10, 
+    restricciones: ["vegano", "sin gluten"], 
+    tipo: "cena", 
+    objetivos: ["perder_peso", "mantener_peso"], 
+    acompanamiento: "Arroz integral", 
+    ingredientes: [
+        { nombre: "Tofu", gramos: 150 }, 
+        { nombre: "Verduras", gramos: 100 }
+    ]
+},
+{ 
+    nombre: "Pechuga de Pollo Asada", 
+    calorias: 400, proteinas: 45, carbohidratos: 20, grasas: 10, 
+    restricciones: ["sin gluten"], 
+    tipo: "cena", 
+    objetivos: ["mantener_peso", "ganar_masa"], 
+    acompanamiento: "Verduras al vapor", 
+    ingredientes: [
+        { nombre: "Pechuga de Pollo", gramos: 150 }, 
+        { nombre: "Verduras", gramos: 100 }
+    ]
+},
+{ 
+    nombre: "Pizza de Coliflor", 
+    calorias: 400, proteinas: 20, carbohidratos: 40, grasas: 15, 
+    restricciones: ["vegetariano", "sin gluten"], 
+    tipo: "cena", 
+    objetivos: ["mantener_peso", "perder_peso"], 
+    acompanamiento: "Ensalada mixta", 
+    ingredientes: [
+        { nombre: "Coliflor", gramos: 150 }, 
+        { nombre: "Queso", gramos: 100 }
+    ]
+},
+{ 
+    nombre: "Tilapia al Limón", 
+    calorias: 300, proteinas: 35, carbohidratos: 5, grasas: 15, 
+    restricciones: ["sin gluten", "pescatariano"], 
+    tipo: "cena", 
+    objetivos: ["mantener_peso", "perder_peso"], 
+    acompanamiento: "Arroz integral", 
+    ingredientes: [
+        { nombre: "Tilapia", gramos: 150 }, 
+        { nombre: "Arroz integral", gramos: 100 }
+    ]
+},
 
-    // Snacks
-    { nombre: "Yogur con Almendras", calorias: 200, proteinas: 10, carbohidratos: 20, grasas: 10, restricciones: ["sin gluten", "vegetariano"], tipo: "snack", objetivos: ["mantener_peso"] },
-    { nombre: "Frutas con Mantequilla de Almendra", calorias: 250, proteinas: 5, carbohidratos: 40, grasas: 10, restricciones: ["vegano", "sin gluten"], tipo: "snack", objetivos: ["mantener_peso", "perder_peso"] },
-    { nombre: "Barra de Proteína Casera", calorias: 300, proteinas: 25, carbohidratos: 30, grasas: 15, restricciones: ["sin gluten"], tipo: "snack", objetivos: ["ganar_masa"] },
-    { nombre: "Hummus con Palitos de Zanahoria", calorias: 150, proteinas: 5, carbohidratos: 15, grasas: 5, restricciones: ["vegano", "sin gluten"], tipo: "snack", objetivos: ["mantener_peso", "perder_peso"] },
-    { nombre: "Nueces Mixtas", calorias: 250, proteinas: 5, carbohidratos: 10, grasas: 20, restricciones: ["vegano", "sin gluten"], tipo: "snack", objetivos: ["mantener_peso", "ganar_masa"] }
-];
+// Snacks
+{ 
+    nombre: "Yogur con Almendras", 
+    calorias: 200, proteinas: 10, carbohidratos: 20, grasas: 10, 
+    restricciones: ["sin gluten", "vegetariano"], 
+    tipo: "snack", 
+    objetivos: ["mantener_peso"], 
+    ingredientes: [
+        { nombre: "Yogur", gramos: 100 }, 
+        { nombre: "Almendras", gramos: 30 }
+    ]
+},
+{ 
+    nombre: "Frutas con Mantequilla de Almendra", 
+    calorias: 250, proteinas: 5, carbohidratos: 40, grasas: 10, 
+    restricciones: ["vegano", "sin gluten"], 
+    tipo: "snack", 
+    objetivos: ["mantener_peso", "perder_peso"], 
+    ingredientes: [
+        { nombre: "Frutas", gramos: 150 }, 
+        { nombre: "Mantequilla de Almendra", gramos: 20 }
+    ]
+},
+{ 
+    nombre: "Barra de Proteína Casera", 
+    calorias: 300, proteinas: 25, carbohidratos: 30, grasas: 15, 
+    restricciones: ["sin gluten"], 
+    tipo: "snack", 
+    objetivos: ["ganar_masa"], 
+    ingredientes: [
+        { nombre: "Proteína en Polvo", gramos: 30 }, 
+        { nombre: "Avena", gramos: 50 }, 
+        { nombre: "Mantequilla de Almendra", gramos: 30 }
+    ]
+},
+{ 
+    nombre: "Hummus con Palitos de Zanahoria", 
+    calorias: 150, proteinas: 5, carbohidratos: 15, grasas: 5, 
+    restricciones: ["vegano", "sin gluten"], 
+    tipo: "snack", 
+    objetivos: ["mantener_peso", "perder_peso"], 
+    ingredientes: [
+        { nombre: "Hummus", gramos: 50 }, 
+        { nombre: "Zanahoria", gramos: 100 }
+    ]
+},
+{ 
+    nombre: "Nueces Mixtas", 
+    calorias: 250, proteinas: 5, carbohidratos: 10, grasas: 20, 
+    restricciones: ["vegano", "sin gluten"], 
+    tipo: "snack", 
+    objetivos: ["mantener_peso", "ganar_masa"], 
+    ingredientes: [
+        { nombre: "Nueces Mixtas", gramos: 50 }
+    ]
+}
+
 
 // Función para generar automáticamente el menú completo del día con botón para información nutricional
 function generarMenuAutomatico(caloriasDiarias, restriccionesUsuario, objetivo) {
