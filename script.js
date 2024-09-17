@@ -1,6 +1,20 @@
 // Variable global para almacenar el gráfico de progreso
 let graficoProgreso;
 
+// Función para calcular la TMB (Tasa Metabólica Basal)
+function calcularTMB(peso, altura, edad, genero) {
+    if (genero === 'masculino') {
+        return Math.round(88.36 + (13.4 * peso) + (4.8 * altura) - (5.7 * edad));
+    } else {
+        return Math.round(447.6 + (9.2 * peso) + (3.1 * altura) - (4.3 * edad));
+    }
+}
+
+// Función para calcular la ingesta de agua recomendada
+function calcularIngestaAgua(peso) {
+    return (peso * 0.035).toFixed(2); // 35 ml por kg de peso
+}
+
 // Base de datos de recetas con restricciones alimenticias y objetivos de nutrición, con acompañamientos
 const recetas = [
     // Desayunos
@@ -27,14 +41,14 @@ const recetas = [
     { nombre: "Sándwich de Pollo a la Parrilla", calorias: 500, proteinas: 35, carbohidratos: 50, grasas: 15, restricciones: ["sin gluten"], tipo: "almuerzo", objetivos: ["mantener_peso", "ganar_masa"], acompanamiento: "Papas horneadas" },
     { nombre: "Hamburguesa de Lentejas", calorias: 400, proteinas: 20, carbohidratos: 60, grasas: 10, restricciones: ["vegano", "sin gluten"], tipo: "almuerzo", objetivos: ["mantener_peso", "perder_peso"], acompanamiento: "Puré de papa" },
 
-    // Cenas (con acompañamientos)
+    // Cenas
     { nombre: "Salmón al Horno", calorias: 450, proteinas: 40, carbohidratos: 5, grasas: 30, restricciones: ["sin gluten", "pescatariano"], tipo: "cena", objetivos: ["mantener_peso", "ganar_masa"], acompanamiento: "Espárragos asados" },
     { nombre: "Tofu Salteado con Verduras", calorias: 350, proteinas: 20, carbohidratos: 30, grasas: 10, restricciones: ["vegano", "sin gluten"], tipo: "cena", objetivos: ["perder_peso", "mantener_peso"], acompanamiento: "Arroz integral" },
     { nombre: "Pechuga de Pollo Asada", calorias: 400, proteinas: 45, carbohidratos: 20, grasas: 10, restricciones: ["sin gluten"], tipo: "cena", objetivos: ["mantener_peso", "ganar_masa"], acompanamiento: "Verduras al vapor" },
     { nombre: "Pizza de Coliflor", calorias: 400, proteinas: 20, carbohidratos: 40, grasas: 15, restricciones: ["vegetariano", "sin gluten"], tipo: "cena", objetivos: ["mantener_peso", "perder_peso"], acompanamiento: "Ensalada mixta" },
     { nombre: "Tilapia al Limón", calorias: 300, proteinas: 35, carbohidratos: 5, grasas: 15, restricciones: ["sin gluten", "pescatariano"], tipo: "cena", objetivos: ["mantener_peso", "perder_peso"], acompanamiento: "Arroz integral" },
 
-    // Snacks (añadir más si es necesario)
+    // Snacks
     { nombre: "Yogur con Almendras", calorias: 200, proteinas: 10, carbohidratos: 20, grasas: 10, restricciones: ["sin gluten", "vegetariano"], tipo: "snack", objetivos: ["mantener_peso"] },
     { nombre: "Frutas con Mantequilla de Almendra", calorias: 250, proteinas: 5, carbohidratos: 40, grasas: 10, restricciones: ["vegano", "sin gluten"], tipo: "snack", objetivos: ["mantener_peso", "perder_peso"] },
     { nombre: "Barra de Proteína Casera", calorias: 300, proteinas: 25, carbohidratos: 30, grasas: 15, restricciones: ["sin gluten"], tipo: "snack", objetivos: ["ganar_masa"] },
@@ -79,38 +93,54 @@ if (nutricionForm) {
         event.preventDefault();
 
         // Obtener los datos del formulario
-        const nombre = document.getElementById("nombre").value;
-        const edad = document.getElementById("edad").value;
-        const peso = document.getElementById("peso").value;
-        const altura = document.getElementById("altura").value;
-        const genero = document.getElementById("genero").value;
-        const objetivo = document.getElementById("objetivo").value;
-        const restricciones = document.getElementById("restricciones").value;
-        const comidasPorDia = 5; // Número fijo de comidas por día
+        const nombreField = document.getElementById("nombre");
+        const edadField = document.getElementById("edad");
+        const pesoField = document.getElementById("peso");
+        const alturaField = document.getElementById("altura");
+        const generoField = document.getElementById("genero");
+        const objetivoField = document.getElementById("objetivo");
+        const restriccionesField = document.getElementById("restricciones");
 
-        // Calcular BMR (Tasa Metabólica Basal)
-        let bmr;
-        if (genero === "masculino") {
-            bmr = 88.36 + (13.4 * peso) + (4.8 * altura) - (5.7 * edad);
+        if (nombreField && edadField && pesoField && alturaField && generoField && objetivoField && restriccionesField) {
+            const nombre = nombreField.value;
+            const edad = edadField.value;
+            const peso = pesoField.value;
+            const altura = alturaField.value;
+            const genero = generoField.value;
+            const objetivo = objetivoField.value;
+            const restricciones = restriccionesField.value;
+
+            // Calcular BMR (Tasa Metabólica Basal)
+            const bmr = calcularTMB(peso, altura, edad, genero);
+
+            // Calcular las calorías diarias dependiendo del objetivo
+            let caloriasDiarias;
+            if (objetivo === "perder_peso") {
+                caloriasDiarias = bmr * 1.2 - 500;
+            } else if (objetivo === "ganar_masa") {
+                caloriasDiarias = bmr * 1.5 + 300;
+            } else {
+                caloriasDiarias = bmr * 1.2;
+            }
+
+            // Mostrar el consumo de agua recomendado
+            const ingestaAgua = calcularIngestaAgua(peso);
+            console.log(`Tu TMB es ${bmr} kcal.`);
+            console.log(`Te recomendamos beber ${ingestaAgua} litros de agua al día.`);
+            
+            const resultadoAgua = document.getElementById("resultadoAgua");
+            if (resultadoAgua) {
+                resultadoAgua.textContent = `Te recomendamos beber ${ingestaAgua} litros de agua al día.`;
+            }
+
+            // Generar el menú automáticamente
+            const menuGenerado = generarMenuAutomatico(caloriasDiarias, restricciones, objetivo);
+            const resultadoDieta = document.getElementById("resultadoDieta");
+            if (resultadoDieta) {
+                resultadoDieta.innerHTML = menuGenerado;
+            }
         } else {
-            bmr = 447.6 + (9.2 * peso) + (3.1 * altura) - (4.3 * edad);
-        }
-
-        // Calcular las calorías diarias dependiendo del objetivo
-        let caloriasDiarias;
-        if (objetivo === "perder_peso") {
-            caloriasDiarias = bmr * 1.2 - 500;
-        } else if (objetivo === "ganar_masa") {
-            caloriasDiarias = bmr * 1.5 + 300;
-        } else {
-            caloriasDiarias = bmr * 1.2;
-        }
-
-        // Generar el menú automáticamente
-        const menuGenerado = generarMenuAutomatico(caloriasDiarias, restricciones, objetivo);
-        const resultadoDieta = document.getElementById("resultadoDieta");
-        if (resultadoDieta) {
-            resultadoDieta.innerHTML = menuGenerado;
+            console.error("Algunos de los campos del formulario no se encontraron en el DOM.");
         }
     });
 }
@@ -187,5 +217,3 @@ if (cargarProgresoForm) {
         mostrarGraficoProgreso(dni);
     });
 }
-
-
