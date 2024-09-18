@@ -1,78 +1,52 @@
-body {
-    background-color: #000; /* Fondo negro */
-    color: #fff; /* Texto blanco */
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    margin: 0;
+#personalizacion {
     padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
-.form-container,
-.day-selection,
-#menu-container {
-    background-color: #111; /* Fondo gris oscuro */
-    border: 2px solid #00ff00; /* Borde verde lima */
-    padding: 20px;
-    border-radius: 8px;
-    width: 100%;
-    max-width: 400px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 8px rgba(0, 255, 0, 0.1); /* Sombra con verde lima */
+#personalizacion h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
 }
 
-h1, h2 {
-    color: #00ff00; /* Verde lima */
-    text-align: center;
+#menu-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
 }
 
-input, select {
-    width: 100%;
+#menu-form label {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+#menu-form input, 
+#menu-form select {
     padding: 10px;
-    margin-bottom: 15px;
-    border: 2px solid #fff; /* Borde blanco */
-    background-color: #333; /* Fondo gris oscuro */
-    color: #fff; /* Texto blanco */
+    border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 1rem;
+    font-size: 16px;
 }
 
-button {
-    background-color: #00ff00; /* Fondo verde lima */
-    color: #000; /* Texto negro */
+#menu-form button {
     padding: 12px;
-    width: 100%;
+    background-color: #FF7F50;
+    color: white;
     border: none;
     border-radius: 5px;
     font-size: 16px;
-    font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-button:hover {
-    background-color: #00cc00; /* Verde más oscuro al pasar el cursor */
+#menu-form button:hover {
+    background-color: #FF4500;
 }
 
-.comida {
-    background-color: #222; /* Fondo gris oscuro */
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombra ligera */
-}
-
-.comida h3 {
-    color: #00ff00; /* Verde lima para los títulos */
-    margin-bottom: 5px;
-    font-size: 1.2rem;
-}
-
-.comida p {
-    margin: 5px 0;
-    font-size: 1rem;
-    color: #fff;
+#resultado-menu {
+    margin-top: 20px;
+    font-size: 18px;
+    color: green;
 }
