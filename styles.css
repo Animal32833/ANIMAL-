@@ -1,10 +1,10 @@
-/* Estilo del formulario completo */
 #personalizacion {
     padding: 20px;
     background-color: #f9f9f9;
     border-radius: 10px;
     max-width: 700px;
-    margin: 0 auto;
+    margin: 20px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 #personalizacion h2 {
@@ -15,7 +15,7 @@
 
 #menu-form {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr;
     gap: 15px;
 }
 
@@ -27,11 +27,12 @@
 
 #menu-form input[type="number"],
 #menu-form select {
-    padding: 8px;
+    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     width: 100%;
     font-size: 16px;
+    box-sizing: border-box;
 }
 
 #menu-form input[type="checkbox"] {
@@ -39,7 +40,7 @@
 }
 
 #menu-form button {
-    grid-column: span 2; /* El botón ocupa dos columnas */
+    grid-column: span 2;
     padding: 12px;
     background-color: #FF7F50;
     color: white;
@@ -60,4 +61,15 @@
     font-size: 18px;
     color: green;
     text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #menu-form {
+        grid-template-columns: 1fr;
+    }
+
+    #menu-form button {
+        grid-column: span 1;
+    }
 }
