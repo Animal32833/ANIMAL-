@@ -1,56 +1,53 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App de Nutrición</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Enlace a tu archivo de estilos -->
-   
-    <script src="script.js" defer></script> <!-- Enlace a tu archivo JavaScript -->
-</head>
-<body>
+<section id="personalizacion">
+    <h2>Personaliza tu menú</h2>
+    <p>Completa los datos para obtener un menú personalizado según tus necesidades.</p>
 
-    <div class="form-container">
-        <h1>Registro de Usuario</h1>
-        <form id="user-form">
-            <label for="dni">DNI:</label>
-            <input type="text" id="dni" name="dni">
+    <!-- Formulario completo -->
+    <form id="menu-form">
+        <!-- Edad, altura, peso -->
+        <label for="edad">Edad:</label>
+        <input type="number" id="edad" name="edad" required>
 
-            <label for="peso">Peso (kg):</label>
-            <input type="number" id="peso" name="peso">
+        <label for="altura">Altura (cm):</label>
+        <input type="number" id="altura" name="altura" required>
 
-            <label for="altura">Altura (cm):</label>
-            <input type="number" id="altura" name="altura">
+        <label for="peso">Peso (kg):</label>
+        <input type="number" id="peso" name="peso" required>
 
-            <label for="edad">Edad:</label>
-            <input type="number" id="edad" name="edad">
+        <!-- Sexo -->
+        <label for="sexo">Sexo:</label>
+        <select id="sexo" name="sexo" required>
+            <option value="masculino">Masculino</option>
+            <option value="femenino">Femenino</option>
+            <option value="otro">Otro</option>
+        </select>
 
-            <label for="objetivo">Objetivo:</label>
-            <select id="objetivo" name="objetivo">
-                <option value="mantener">Mantener Peso</option>
-                <option value="ganar">Ganar Peso</option>
-                <option value="perder">Perder Peso</option>
-            </select>
+        <!-- Actividad física -->
+        <label for="actividad">Actividad física:</label>
+        <select id="actividad" name="actividad" required>
+            <option value="musculacion">Musculación</option>
+            <option value="crossfit">Crossfit</option>
+            <option value="funcional">Funcional</option>
+        </select>
 
-            <h2>Restricciones Alimentarias</h2>
-            <div class="checkboxes">
-                <input type="checkbox" id="sin-tacc" name="restricciones" value="Sin TACC">
-                <label for="sin-tacc">Sin TACC</label><br>
-                <input type="checkbox" id="sin-azucar" name="restricciones" value="Sin Azúcar">
-                <label for="sin-azucar">Sin Azúcar</label><br>
-                <input type="checkbox" id="vegetariano" name="restricciones" value="Vegetariano">
-                <label for="vegetariano">Vegetariano</label><br>
-                <input type="checkbox" id="vegano" name="restricciones" value="Vegano">
-                <label for="vegano">Vegano</label>
-            </div>
+        <!-- Restricciones alimenticias -->
+        <label>Restricciones alimenticias:</label>
+        <label>
+            <input type="checkbox" name="restriccion" value="vegano"> Vegano
+        </label>
+        <label>
+            <input type="checkbox" name="restriccion" value="vegetariano"> Vegetariano
+        </label>
+        <label>
+            <input type="checkbox" name="restriccion" value="celiaco"> Celíaco (sin gluten)
+        </label>
+        <label>
+            <input type="checkbox" name="restriccion" value="sinAzucar"> Sin azúcar
+        </label>
 
-            <button type="submit">Guardar</button>
-        </form>
-    </div>
-
-    <div class="day-selection">
-        <h2>Selecciona el día de la semana</h2>
-        <select id="dia-semana">
+        <!-- Día de la semana -->
+        <label for="dia">Día de la semana:</label>
+        <select id="dia" name="dia" required>
             <option value="lunes">Lunes</option>
             <option value="martes">Martes</option>
             <option value="miercoles">Miércoles</option>
@@ -59,10 +56,11 @@
             <option value="sabado">Sábado</option>
             <option value="domingo">Domingo</option>
         </select>
-        <button onclick="generarMenu()">Generar Menú</button>
-    </div>
 
-    <div id="menu-container"></div>
+        <!-- Botón de envío -->
+        <button type="submit">Generar mi menú personalizado</button>
+    </form>
 
-</body>
-</html>
+    <!-- Resultado del menú -->
+    <div id="resultado-menu"></div>
+</section>
