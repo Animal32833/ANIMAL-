@@ -1,65 +1,89 @@
+/* Fondo general del cuerpo con textura */
+body {
+    background-color: #121212; /* Fondo oscuro */
+    background-image: url('path/to/texture.png'); /* Cambia 'path/to/texture.png' a la ruta de tu imagen de textura */
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: white;
+}
+
+/* Contenedor del formulario */
 #personalizacion {
     padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
+    background-color: #1c1c1c; /* Fondo negro para el formulario */
+    border-radius: 15px;
     max-width: 700px;
-    margin: 20px auto;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 40px auto;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+    color: white;
 }
 
+/* Logo centrado */
+#logo {
+    display: block;
+    margin: 0 auto 20px;
+    width: 150px; /* Ajusta el tamaño según tu logo */
+}
+
+/* Título del formulario */
 #personalizacion h2 {
-    font-size: 26px;
-    margin-bottom: 10px;
+    font-size: 28px;
+    margin-bottom: 20px;
     text-align: center;
+    color: #39FF14; /* Verde lima neón */
 }
 
+/* Estilos del formulario */
 #menu-form {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    gap: 20px;
 }
 
 #menu-form label {
     font-size: 16px;
     margin-bottom: 5px;
     display: block;
+    color: white;
 }
 
 #menu-form input[type="number"],
 #menu-form select {
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 1px solid #39FF14; /* Verde lima neón para los bordes */
+    background-color: #1c1c1c; /* Fondo negro */
+    color: white; /* Texto blanco */
+    border-radius: 8px;
     width: 100%;
     font-size: 16px;
     box-sizing: border-box;
 }
 
 #menu-form input[type="checkbox"] {
-    margin-right: 8px;
+    margin-right: 10px;
 }
 
 #menu-form button {
     grid-column: span 2;
-    padding: 12px;
-    background-color: #FF7F50;
-    color: white;
+    padding: 14px;
+    background-color: #39FF14; /* Botón verde lima neón */
+    color: black;
     border: none;
-    border-radius: 5px;
-    font-size: 16px;
+    border-radius: 8px;
+    font-size: 18px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 #menu-form button:hover {
-    background-color: #FF4500;
+    background-color: #32CC12; /* Hover más oscuro para el botón */
 }
 
 /* Resultado del menú */
 #resultado-menu {
     margin-top: 20px;
     font-size: 18px;
-    color: green;
+    color: #39FF14; /* Texto verde lima */
     text-align: center;
 }
 
