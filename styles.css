@@ -5,6 +5,7 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
     color: white;
+    font-family: 'Poppins', sans-serif; /* Fuente Poppins */
 }
 
 /* Contenedor del formulario */
@@ -21,8 +22,9 @@ body {
 /* Logo centrado */
 #logo {
     display: block;
-    margin: 0 auto 20px;
-    width: 150px; /* Ajusta el tamaño según tu logo */
+    margin: 0 auto 30px;
+    width: 250px; /* Tamaño ajustable */
+    height: auto; /* Mantiene la proporción del logo */
 }
 
 /* Título del formulario */
@@ -37,12 +39,12 @@ body {
 #menu-form {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    gap: 25px; /* Más espacio entre los campos */
 }
 
 #menu-form label {
     font-size: 16px;
-    margin-bottom: 5px;
+    margin-bottom: 10px; /* Espacio bajo las etiquetas */
     display: block;
     color: white;
 }
@@ -50,10 +52,10 @@ body {
 #menu-form input[type="number"],
 #menu-form select {
     padding: 10px;
-    border: 1px solid #39FF14; /* Verde lima neón para los bordes */
-    background-color: #1c1c1c; /* Fondo negro */
-    color: white; /* Texto blanco */
-    border-radius: 8px;
+    border: 1px solid #32CC12; /* Verde suave */
+    background-color: #1c1c1c;
+    color: white;
+    border-radius: 8px; /* Bordes redondeados */
     width: 100%;
     font-size: 16px;
     box-sizing: border-box;
@@ -66,7 +68,7 @@ body {
 #menu-form button {
     grid-column: span 2;
     padding: 14px;
-    background-color: #39FF14; /* Botón verde lima neón */
+    background-color: #32CC12; /* Verde más suave */
     color: black;
     border: none;
     border-radius: 8px;
@@ -76,7 +78,7 @@ body {
 }
 
 #menu-form button:hover {
-    background-color: #32CC12; /* Hover más oscuro para el botón */
+    background-color: #28A608; /* Hover más oscuro */
 }
 
 /* Resultado del menú */
