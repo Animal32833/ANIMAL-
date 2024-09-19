@@ -64,7 +64,7 @@ document.getElementById('menu-form').addEventListener('submit', function(event) 
     menu += `<p><strong>Actividad física:</strong> ${actividad}</p>`;
     menu += `<p><strong>Objetivo:</strong> ${objetivo === 'perder' ? 'Perder peso' : objetivo === 'ganar' ? 'Ganar masa muscular' : 'Mantener peso'}</p>`;
     menu += `<p><strong>Calorías diarias estimadas:</strong> ${Math.round(caloriasDiarias)} kcal</p>`;
-    menu += `<p><strong>Distribución de macronutrientes:</strong> ${Math.round(carbohidratosDiarios)}g de carbohidratos, ${Math.round(proteinasDiarias)}g de proteínas, ${Math.round(grasasDiarias)}g de grasas</p>`;
+    menu += `<p><strong>Distribución de macronutrientes diarios:</strong> ${Math.round(carbohidratosDiarios)}g de carbohidratos, ${Math.round(proteinasDiarias)}g de proteínas, ${Math.round(grasasDiarias)}g de grasas</p>`;
     menu += `<p><strong>Restricciones alimenticias:</strong> ${restricciones.length ? restricciones.join(', ') : 'Ninguna'}</p>`;
 
     // Menú por día de la semana con alimentos específicos
@@ -95,6 +95,9 @@ document.getElementById('menu-form').addEventListener('submit', function(event) 
     // Mostrar el resultado con formato HTML
     document.getElementById('resultado-menu').innerHTML = menu;
 });
+
+// Funciones para generar menús específicos de cada día con ajuste de macronutrientes y restricciones alimenticias
+
 
 // Funciones para generar menús específicos de cada día con más variedad y ajuste de macronutrientes y restricciones alimenticias
 
