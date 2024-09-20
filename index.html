@@ -3,73 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personalización de Menú</title>
-    <!-- Enlace al archivo CSS -->
-    <link rel="stylesheet" href="styles.css">
+    <title>Menú Personalizado</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: none;
+        }
+        button {
+            background-color: lime;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: darkgreen;
+            color: white;
+        }
+        .resultado-menu {
+            margin-top: 20px;
+            background-color: #444;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .detalles {
+            display: none;
+        }
+        span.toggle-detalles {
+            cursor: pointer;
+            color: lime;
+        }
+    </style>
 </head>
 <body>
-    <!-- Sección de personalización de menú -->
-    <section id="personalizacion">
-        <!-- Logo del gimnasio -->
-       <img src="logo.png" alt="Logo del gimnasio" id="logo">
 
-
-        <h2>Personaliza tu menú</h2>
-        <p>Completa los datos para obtener un menú personalizado según tus necesidades.</p>
-
-        <!-- Formulario completo -->
+    <div class="container">
+        <h1>Personaliza tu Menú</h1>
         <form id="menu-form">
-            <!-- Edad, altura, peso -->
             <label for="edad">Edad:</label>
-            <input type="number" id="edad" name="edad" required>
+            <input type="number" id="edad" required>
 
             <label for="altura">Altura (cm):</label>
-            <input type="number" id="altura" name="altura" required>
+            <input type="number" id="altura" required>
 
             <label for="peso">Peso (kg):</label>
-            <input type="number" id="peso" name="peso" required>
+            <input type="number" id="peso" required>
 
-            <!-- Sexo -->
             <label for="sexo">Sexo:</label>
-            <select id="sexo" name="sexo" required>
+            <select id="sexo" required>
                 <option value="masculino">Masculino</option>
                 <option value="femenino">Femenino</option>
-                <option value="otro">Otro</option>
             </select>
 
-            <!-- Actividad física -->
             <label for="actividad">Actividad física:</label>
-            <select id="actividad" name="actividad" required>
+            <select id="actividad" required>
                 <option value="musculacion">Musculación</option>
                 <option value="crossfit">Crossfit</option>
                 <option value="funcional">Funcional</option>
             </select>
-            
-                 <label for="objetivo">Objetivo:</label>
-            <select id="objetivo" name="objetivo" required>
-                <option value="perder">Perder peso</option>
+
+            <label for="objetivo">Objetivo:</label>
+            <select id="objetivo" required>
                 <option value="mantener">Mantener peso</option>
+                <option value="perder">Perder peso</option>
                 <option value="ganar">Ganar masa muscular</option>
             </select>
-            
-            <!-- Restricciones alimenticias -->
-            <label>Restricciones alimenticias:</label>
-            <label>
-                <input type="checkbox" name="restriccion" value="vegano"> Vegano
-            </label>
-            <label>
-                <input type="checkbox" name="restriccion" value="vegetariano"> Vegetariano
-            </label>
-            <label>
-                <input type="checkbox" name="restriccion" value="celiaco"> Celíaco (sin gluten)
-            </label>
-            <label>
-                <input type="checkbox" name="restriccion" value="sinAzucar"> Sin azúcar
-            </label>
 
-            <!-- Día de la semana -->
+            <label>Restricciones alimentarias:</label>
+            <input type="checkbox" name="restriccion" value="vegano"> Vegano<br>
+            <input type="checkbox" name="restriccion" value="vegetariano"> Vegetariano<br>
+            <input type="checkbox" name="restriccion" value="celiaco"> Celíaco (sin gluten)<br>
+            <input type="checkbox" name="restriccion" value="sinAzucar"> Sin azúcar<br>
+
             <label for="dia">Día de la semana:</label>
-            <select id="dia" name="dia" required>
+            <select id="dia" required>
                 <option value="lunes">Lunes</option>
                 <option value="martes">Martes</option>
                 <option value="miercoles">Miércoles</option>
@@ -79,53 +111,15 @@
                 <option value="domingo">Domingo</option>
             </select>
 
-            <!-- Botón de envío -->
             <button type="submit">Generar mi menú personalizado</button>
         </form>
 
-        <!-- Resultado del menú -->
-        <div id="resultado-menu"></div>
-    </section>
+        <div id="resultado-menu" class="resultado-menu"></div>
+    </div>
 
-    <!-- Script para manejar el formulario -->
     <script>
-        document.getElementById('menu-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            // Capturar los datos del formulario
-            const edad = document.getElementById('edad').value;
-            const altura = document.getElementById('altura').value;
-            const peso = document.getElementById('peso').value;
-            const sexo = document.getElementById('sexo').value;
-            const actividad = document.getElementById('actividad').value;
-            const restricciones = Array.from(document.querySelectorAll('input[name="restriccion"]:checked'))
-                                       .map(checkbox => checkbox.value);
-            const dia = document.getElementById('dia').value;
-
-            // Lógica para generar el menú personalizado
-            let menu = `Menú personalizado para ${dia}: \n`;
-            menu += `Edad: ${edad}, Altura: ${altura}cm, Peso: ${peso}kg, Sexo: ${sexo}\n`;
-            menu += `Actividad física: ${actividad}\n`;
-            menu += `Restricciones alimenticias: ${restricciones.length ? restricciones.join(', ') : 'Ninguna'}\n`;
-
-            // Ejemplo simple de menú basado en la actividad física
-            if (actividad === 'musculacion') {
-                menu += 'Desayuno: Avena con frutas y batido de proteínas.\n';
-                menu += 'Almuerzo: Pollo a la plancha con arroz integral y brócoli.\n';
-                menu += 'Cena: Pescado al horno con ensalada.\n';
-            } else if (actividad === 'crossfit') {
-                menu += 'Desayuno: Tostadas integrales con aguacate y huevo.\n';
-                menu += 'Almuerzo: Ensalada de quinoa con garbanzos.\n';
-                menu += 'Cena: Pollo a la plancha con verduras.\n';
-            } else if (actividad === 'funcional') {
-                menu += 'Desayuno: Batido de frutas con proteína vegana.\n';
-                menu += 'Almuerzo: Ensalada de lentejas con vegetales.\n';
-                menu += 'Cena: Tofu con arroz integral y espinacas.\n';
-            }
-
-            // Mostrar el resultado del menú
-            document.getElementById('resultado-menu').textContent = menu;
-        });
+        // Aquí va el código JavaScript del script personalizado
     </script>
+
 </body>
 </html>
