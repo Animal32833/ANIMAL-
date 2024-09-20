@@ -1,371 +1,389 @@
-document.getElementById('menu-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    // Capturar los datos del formulario
-    const edad = parseInt(document.getElementById('edad').value);
-    const altura = parseInt(document.getElementById('altura').value); // en cm
-    const peso = parseFloat(document.getElementById('peso').value); // en kg
-    const sexo = document.getElementById('sexo').value;
-    const actividad = document.getElementById('actividad').value;
-    const objetivo = document.getElementById('objetivo').value; // Objetivo del usuario
-    const restricciones = Array.from(document.querySelectorAll('input[name="restriccion"]:checked'))
-                               .map(checkbox => checkbox.value);
-    const dia = document.getElementById('dia').value;
-
-    // Fórmula para calcular el metabolismo basal (MB):
-    let caloriasDiarias;
-    if (sexo === "masculino") {
-        caloriasDiarias = 10 * peso + 6.25 * altura - 5 * edad + 5; // Fórmula Harris-Benedict para hombres
-    } else {
-        caloriasDiarias = 10 * peso + 6.25 * altura - 5 * edad - 161; // Fórmula Harris-Benedict para mujeres
-    }
-
-    // Ajuste de calorías según la actividad física:
-    switch (actividad) {
-        case 'musculacion':
-            caloriasDiarias *= 1.55; // Actividad moderada
-            break;
-        case 'crossfit':
-            caloriasDiarias *= 1.75; // Actividad intensa
-            break;
-        case 'funcional':
-            caloriasDiarias *= 1.4; // Actividad ligera
-            break;
-    }
-
-    // Ajuste de calorías según el objetivo
-    if (objetivo === 'perder') {
-        caloriasDiarias *= 0.85; // Reducimos calorías para pérdida de peso
-    } else if (objetivo === 'ganar') {
-        caloriasDiarias *= 1.15; // Aumentamos calorías para ganar masa muscular
-    }
-
-    // Distribución de macronutrientes (40% carbohidratos, 30% proteínas, 30% grasas)
-    const carbohidratosDiarios = (caloriasDiarias * 0.4) / 4; // 4 calorías por gramo de carbohidrato
-    const proteinasDiarias = (caloriasDiarias * 0.3) / 4; // 4 calorías por gramo de proteína
-    const grasasDiarias = (caloriasDiarias * 0.3) / 9; // 9 calorías por gramo de grasa
-
-    // Dividimos los macronutrientes por comida: desayuno, almuerzo, cena
-    const carbohidratosDesayuno = carbohidratosDiarios * 0.3;
-    const carbohidratosAlmuerzo = carbohidratosDiarios * 0.4;
-    const carbohidratosCena = carbohidratosDiarios * 0.3;
-
-    const proteinasDesayuno = proteinasDiarias * 0.3;
-    const proteinasAlmuerzo = proteinasDiarias * 0.4;
-    const proteinasCena = proteinasDiarias * 0.3;
-
-    const grasasDesayuno = grasasDiarias * 0.3;
-    const grasasAlmuerzo = grasasDiarias * 0.4;
-    const grasasCena = grasasDiarias * 0.3;
-
-    // Menú inicial con formato HTML
-    let menu = `<strong>Menú personalizado para ${dia}:</strong><br>`;
-    menu += `<p><strong>Edad:</strong> ${edad}, <strong>Altura:</strong> ${altura}cm, <strong>Peso:</strong> ${peso}kg, <strong>Sexo:</strong> ${sexo}</p>`;
-    menu += `<p><strong>Actividad física:</strong> ${actividad}</p>`;
-    menu += `<p><strong>Objetivo:</strong> ${objetivo === 'perder' ? 'Perder peso' : objetivo === 'ganar' ? 'Ganar masa muscular' : 'Mantener peso'}</p>`;
-    menu += `<p><strong>Calorías diarias estimadas:</strong> ${Math.round(caloriasDiarias)} kcal</p>`;
-    menu += `<p><strong>Distribución de macronutrientes diarios:</strong> ${Math.round(carbohidratosDiarios)}g de carbohidratos, ${Math.round(proteinasDiarias)}g de proteínas, ${Math.round(grasasDiarias)}g de grasas</p>`;
-    menu += `<p><strong>Restricciones alimenticias:</strong> ${restricciones.length ? restricciones.join(', ') : 'Ninguna'}</p>`;
-
-    // Menú por día de la semana con alimentos específicos
-    switch (dia) {
-        case 'lunes':
-            menu += generarMenuDiaLunes(carbohidratosDesayuno, proteinasDesayuno, grasasDesayuno, carbohidratosAlmuerzo, proteinasAlmuerzo, grasasAlmuerzo, carbohidratosCena, proteinasCena, grasasCena, restricciones, objetivo);
-            break;
-        case 'martes':
-            menu += generarMenuDiaMartes(carbohidratosDesayuno, proteinasDesayuno, grasasDesayuno, carbohidratosAlmuerzo, proteinasAlmuerzo, grasasAlmuerzo, carbohidratosCena, proteinasCena, grasasCena, restricciones, objetivo);
-            break;
-        case 'miercoles':
-            menu += generarMenuDiaMiercoles(carbohidratosDesayuno, proteinasDesayuno, grasasDesayuno, carbohidratosAlmuerzo, proteinasAlmuerzo, grasasAlmuerzo, carbohidratosCena, proteinasCena, grasasCena, restricciones, objetivo);
-            break;
-        case 'jueves':
-            menu += generarMenuDiaJueves(carbohidratosDesayuno, proteinasDesayuno, grasasDesayuno, carbohidratosAlmuerzo, proteinasAlmuerzo, grasasAlmuerzo, carbohidratosCena, proteinasCena, grasasCena, restricciones, objetivo);
-            break;
-        case 'viernes':
-            menu += generarMenuDiaViernes(carbohidratosDesayuno, proteinasDesayuno, grasasDesayuno, carbohidratosAlmuerzo, proteinasAlmuerzo, grasasAlmuerzo, carbohidratosCena, proteinasCena, grasasCena, restricciones, objetivo);
-            break;
-        case 'sabado':
-            menu += generarMenuDiaSabado(carbohidratosDesayuno, proteinasDesayuno, grasasDesayuno, carbohidratosAlmuerzo, proteinasAlmuerzo, grasasAlmuerzo, carbohidratosCena, proteinasCena, grasasCena, restricciones, objetivo);
-            break;
-        case 'domingo':
-            menu += generarMenuDiaDomingo(carbohidratosDesayuno, proteinasDesayuno, grasasDesayuno, carbohidratosAlmuerzo, proteinasAlmuerzo, grasasAlmuerzo, carbohidratosCena, proteinasCena, grasasCena, restricciones, objetivo);
-            break;
-    }
-
-    // Mostrar el resultado con formato HTML
-    document.getElementById('resultado-menu').innerHTML = menu;
-});
-
-// Funciones para generar menús específicos de cada día con ajuste de macronutrientes y restricciones alimenticias
-
-
-// Funciones para generar menús específicos de cada día con más variedad y ajuste de macronutrientes y restricciones alimenticias
-
-function generarMenuDiaLunes(carbohidratosDesayuno, proteinasDesayuno, grasasDesayuno, carbohidratosAlmuerzo, proteinasAlmuerzo, grasasAlmuerzo, carbohidratosCena, proteinasCena, grasasCena, restricciones, objetivo) {
+function generarMenuDiaLunes(carbohidratosDesayuno, proteinasDesayuno, grasasDesayuno, carbohidratosAlmuerzo, proteinasAlmuerzo, grasasAlmuerzo, carbohidratosCena, proteinasCena, grasasCena, restricciones, sexo, actividad) {
     let menuLunes = '<h3>Menú del lunes:</h3><ul>';
-    // Variaciones en función de las restricciones alimenticias
-    if (restricciones.includes('vegano')) {
-        menuLunes += `<li>Desayuno: Tostadas integrales con aguacate y batido de proteínas veganas. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuLunes += `<li>Almuerzo: Ensalada de quinoa con tofu y vegetales. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuLunes += `<li>Cena: Hamburguesa de lentejas con ensalada de espinacas. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-    } else if (restricciones.includes('vegetariano')) {
-        menuLunes += `<li>Desayuno: Avena con frutas y nueces. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuLunes += `<li>Almuerzo: Ensalada de garbanzos con arroz integral. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuLunes += `<li>Cena: Tortilla de espinacas y champiñones. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-    } else if (restricciones.includes('celiaco')) {
-        menuLunes += `<li>Desayuno: Yogur sin gluten con avena libre de gluten y frutos rojos. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuLunes += `<li>Almuerzo: Pechuga de pollo con quinoa y brócoli. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuLunes += `<li>Cena: Salmón con vegetales al vapor sin gluten. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-    } else if (restricciones.includes('sinAzucar')) {
-        menuLunes += `<li>Desayuno: Avena sin azúcar con frutas frescas. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuLunes += `<li>Almuerzo: Pollo a la plancha con ensalada de hojas verdes sin aderezo azucarado. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuLunes += `<li>Cena: Pescado al horno con verduras al vapor. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
+
+    const esVegano = restricciones.includes('vegano');
+    const esVegetariano = restricciones.includes('vegetariano');
+    const esCeliaco = restricciones.includes('celiaco');
+    const sinAzucar = restricciones.includes('sinAzucar');
+
+    // Desayuno
+    if (esVegano) {
+        menuLunes += `<li>Desayuno: Tostadas con aguacate y batido de proteínas veganas <span onclick="toggleDetalles('detallesDesayunoLunes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (esVegetariano) {
+        menuLunes += `<li>Desayuno: Avena con frutas frescas y nueces <span onclick="toggleDetalles('detallesDesayunoLunes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (esCeliaco) {
+        menuLunes += `<li>Desayuno: Yogur sin gluten con frutos secos <span onclick="toggleDetalles('detallesDesayunoLunes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (sinAzucar) {
+        menuLunes += `<li>Desayuno: Avena sin azúcar con frutas <span onclick="toggleDetalles('detallesDesayunoLunes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
     } else {
-        // Si no hay restricciones alimenticias
-        if (objetivo === 'perder') {
-            menuLunes += `<li>Desayuno: Avena con frutos rojos y leche de almendras. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-            menuLunes += `<li>Almuerzo: Ensalada de pollo a la plancha con quinoa y espinacas. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-            menuLunes += `<li>Cena: Pescado al horno con verduras al vapor. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-        } else if (objetivo === 'mantener') {
-            menuLunes += `<li>Desayuno: Avena con frutas frescas y frutos secos. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-            menuLunes += `<li>Almuerzo: Pollo a la plancha con arroz integral y brócoli. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-            menuLunes += `<li>Cena: Pescado al horno con patatas asadas. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-        } else if (objetivo === 'ganar') {
-            menuLunes += `<li>Desayuno: Tostadas integrales con aguacate y huevo. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-            menuLunes += `<li>Almuerzo: Pechuga de pollo a la plancha con pasta integral y espinacas. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-            menuLunes += `<li>Cena: Salmón con quinoa y verduras salteadas. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-        }
+        menuLunes += `<li>Desayuno: Avena con frutas y batido de proteínas <span onclick="toggleDetalles('detallesDesayunoLunes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
     }
+
+    menuLunes += `<div id="detallesDesayunoLunes" style="display:none;">
+        <p>Ingredientes: Avena (50g), Frutas (100g), Batido de proteínas (30g).</p>
+        <p>Calorías: ${Math.round(carbohidratosDesayuno * 4 + proteinasDesayuno * 4 + grasasDesayuno * 9)} kcal, Proteínas: ${Math.round(proteinasDesayuno)}g, Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g</p>
+    </div>`;
+
+    // Almuerzo
+    let opcionProteina = actividad === 'crossfit' ? 'Tofu' : 'Pollo';
+    if (esVegano) opcionProteina = 'Tofu';
+    if (esVegetariano) opcionProteina = 'Huevos';
+    
+    menuLunes += `<li>Almuerzo: ${opcionProteina} a la plancha con arroz integral y brócoli <span onclick="toggleDetalles('detallesAlmuerzoLunes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    menuLunes += `<div id="detallesAlmuerzoLunes" style="display:none;">
+        <p>Ingredientes: ${opcionProteina} (200g), Arroz integral (100g), Brócoli (50g).</p>
+        <p>Calorías: ${Math.round(carbohidratosAlmuerzo * 4 + proteinasAlmuerzo * 4 + grasasAlmuerzo * 9)} kcal, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g</p>
+    </div>`;
+
+    // Cena
+    if (esCeliaco) {
+        menuLunes += `<li>Cena: Pescado al horno con ensalada sin gluten <span onclick="toggleDetalles('detallesCenaLunes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (sinAzucar) {
+        menuLunes += `<li>Cena: Pescado al horno con ensalada sin aderezos azucarados <span onclick="toggleDetalles('detallesCenaLunes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else {
+        menuLunes += `<li>Cena: Pescado al horno con ensalada <span onclick="toggleDetalles('detallesCenaLunes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    }
+
+    menuLunes += `<div id="detallesCenaLunes" style="display:none;">
+        <p>Ingredientes: Pescado (150g), Ensalada (200g).</p>
+        <p>Calorías: ${Math.round(carbohidratosCena * 4 + proteinasCena * 4 + grasasCena * 9)} kcal, Proteínas: ${Math.round(proteinasCena)}g, Carbohidratos: ${Math.round(carbohidratosCena)}g, Grasas: ${Math.round(grasasCena)}g</p>
+    </div>`;
+
     menuLunes += '</ul>';
     return menuLunes;
 }
 
-function generarMenuDiaMartes(carbohidratosDesayuno, proteinasDesayuno, grasasDesayuno, carbohidratosAlmuerzo, proteinasAlmuerzo, grasasAlmuerzo, carbohidratosCena, proteinasCena, grasasCena, restricciones, objetivo) {
+// Función para el martes
+function generarMenuDiaMartes(carbohidratosDesayuno, proteinasDesayuno, grasasDesayuno, carbohidratosAlmuerzo, proteinasAlmuerzo, grasasAlmuerzo, carbohidratosCena, proteinasCena, grasasCena, restricciones, sexo, actividad) {
     let menuMartes = '<h3>Menú del martes:</h3><ul>';
-    if (restricciones.includes('vegano')) {
-        menuMartes += `<li>Desayuno: Batido de proteínas veganas con avena y plátano. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuMartes += `<li>Almuerzo: Ensalada de lentejas con tofu y espinacas. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuMartes += `<li>Cena: Hamburguesa vegana con quinoa y aguacate. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-    } else if (restricciones.includes('vegetariano')) {
-        menuMartes += `<li>Desayuno: Yogur con frutos secos y avena. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuMartes += `<li>Almuerzo: Tortilla de espinacas con arroz integral. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuMartes += `<li>Cena: Tofu salteado con verduras. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-    } else if (restricciones.includes('celiaco')) {
-        menuMartes += `<li>Desayuno: Avena sin gluten con nueces y frutas. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuMartes += `<li>Almuerzo: Pollo a la plancha con quinoa y ensalada. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuMartes += `<li>Cena: Pescado al horno con vegetales sin gluten. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-    } else if (restricciones.includes('sinAzucar')) {
-        menuMartes += `<li>Desayuno: Tostadas integrales sin azúcar con mantequilla de maní. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuMartes += `<li>Almuerzo: Pollo con ensalada verde sin aderezo. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuMartes += `<li>Cena: Pescado con verduras al vapor. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
+
+    const esVegano = restricciones.includes('vegano');
+    const esVegetariano = restricciones.includes('vegetariano');
+    const esCeliaco = restricciones.includes('celiaco');
+    const sinAzucar = restricciones.includes('sinAzucar');
+
+    // Desayuno
+    if (esVegano) {
+        menuMartes += `<li>Desayuno: Batido de proteínas veganas con avena y plátano <span onclick="toggleDetalles('detallesDesayunoMartes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (esVegetariano) {
+        menuMartes += `<li>Desayuno: Yogur con frutas frescas y nueces <span onclick="toggleDetalles('detallesDesayunoMartes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (esCeliaco) {
+        menuMartes += `<li>Desayuno: Tostadas sin gluten con aguacate <span onclick="toggleDetalles('detallesDesayunoMartes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (sinAzucar) {
+        menuMartes += `<li>Desayuno: Avena sin azúcar con frutos rojos <span onclick="toggleDetalles('detallesDesayunoMartes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
     } else {
-        // Sin restricciones alimenticias
-        if (objetivo === 'perder') {
-            menuMartes += `<li>Desayuno: Yogur bajo en grasa con avena y frutos secos. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-            menuMartes += `<li>Almuerzo: Pollo a la plancha con ensalada de espinacas. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-            menuMartes += `<li>Cena: Pescado al horno con espárragos. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-        } else if (objetivo === 'mantener') {
-            menuMartes += `<li>Desayuno: Avena con frutas y yogur. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-            menuMartes += `<li>Almuerzo: Pollo a la plancha con arroz integral y verduras. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-            menuMartes += `<li>Cena: Ensalada de quinoa con salmón a la plancha. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-        } else if (objetivo === 'ganar') {
-            menuMartes += `<li>Desayuno: Tostadas con mantequilla de maní y plátano. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-            menuMartes += `<li>Almuerzo: Pollo con pasta integral y verduras. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-            menuMartes += `<li>Cena: Carne a la parrilla con arroz integral. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-        }
+        menuMartes += `<li>Desayuno: Yogur con avena y frutas frescas <span onclick="toggleDetalles('detallesDesayunoMartes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
     }
+
+    menuMartes += `<div id="detallesDesayunoMartes" style="display:none;">
+        <p>Ingredientes: Yogur (200g), Avena (50g), Frutas frescas (100g).</p>
+        <p>Calorías: ${Math.round(carbohidratosDesayuno * 4 + proteinasDesayuno * 4 + grasasDesayuno * 9)} kcal, Proteínas: ${Math.round(proteinasDesayuno)}g, Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g</p>
+    </div>`;
+
+    // Almuerzo
+    let opcionProteina = actividad === 'musculacion' ? 'Pollo' : 'Tofu';
+    if (esVegano) opcionProteina = 'Tofu';
+    if (esVegetariano) opcionProteina = 'Huevos';
+
+    menuMartes += `<li>Almuerzo: ${opcionProteina} a la plancha con ensalada de quinoa y espinacas <span onclick="toggleDetalles('detallesAlmuerzoMartes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    menuMartes += `<div id="detallesAlmuerzoMartes" style="display:none;">
+        <p>Ingredientes: ${opcionProteina} (200g), Quinoa (100g), Espinacas (50g).</p>
+        <p>Calorías: ${Math.round(carbohidratosAlmuerzo * 4 + proteinasAlmuerzo * 4 + grasasAlmuerzo * 9)} kcal, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g</p>
+    </div>`;
+
+    // Cena
+    if (esCeliaco) {
+        menuMartes += `<li>Cena: Pavo al horno con verduras al vapor sin gluten <span onclick="toggleDetalles('detallesCenaMartes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (sinAzucar) {
+        menuMartes += `<li>Cena: Pavo al horno con verduras al vapor sin aderezo <span onclick="toggleDetalles('detallesCenaMartes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else {
+        menuMartes += `<li>Cena: Pavo al horno con verduras al vapor <span onclick="toggleDetalles('detallesCenaMartes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    }
+
+    menuMartes += `<div id="detallesCenaMartes" style="display:none;">
+        <p>Ingredientes: Pavo (150g), Verduras al vapor (200g).</p>
+        <p>Calorías: ${Math.round(carbohidratosCena * 4 + proteinasCena * 4 + grasasCena * 9)} kcal, Proteínas: ${Math.round(proteinasCena)}g, Carbohidratos: ${Math.round(carbohidratosCena)}g, Grasas: ${Math.round(grasasCena)}g</p>
+    </div>`;
+
     menuMartes += '</ul>';
     return menuMartes;
 }
 
-
-function generarMenuDiaMiercoles(carbohidratosDesayuno, proteinasDesayuno, grasasDesayuno, carbohidratosAlmuerzo, proteinasAlmuerzo, grasasAlmuerzo, carbohidratosCena, proteinasCena, grasasCena, restricciones, objetivo) {
+// Función para el miércoles
+function generarMenuDiaMiercoles(carbohidratosDesayuno, proteinasDesayuno, grasasDesayuno, carbohidratosAlmuerzo, proteinasAlmuerzo, grasasAlmuerzo, carbohidratosCena, proteinasCena, grasasCena, restricciones, sexo, actividad) {
     let menuMiercoles = '<h3>Menú del miércoles:</h3><ul>';
-    if (restricciones.includes('vegano')) {
-        menuMiercoles += `<li>Desayuno: Batido de espinacas y proteína vegana. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuMiercoles += `<li>Almuerzo: Ensalada de garbanzos con espinacas. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuMiercoles += `<li>Cena: Tofu a la plancha con arroz integral. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-    } else if (restricciones.includes('vegetariano')) {
-        menuMiercoles += `<li>Desayuno: Avena con leche de almendras y frutas frescas. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuMiercoles += `<li>Almuerzo: Tortilla de espinacas con ensalada de tomate. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuMiercoles += `<li>Cena: Pimientos rellenos de quinoa. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-    } else if (restricciones.includes('celiaco')) {
-        menuMiercoles += `<li>Desayuno: Yogur sin gluten con avena libre de gluten y frutos secos. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuMiercoles += `<li>Almuerzo: Pollo con ensalada de hojas verdes sin gluten. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuMiercoles += `<li>Cena: Pescado al horno con vegetales sin gluten. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-    } else if (restricciones.includes('sinAzucar')) {
-        menuMiercoles += `<li>Desayuno: Tostadas sin azúcar con aguacate y huevo. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuMiercoles += `<li>Almuerzo: Pollo a la plancha con ensalada de espinacas. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuMiercoles += `<li>Cena: Pescado al horno con espárragos. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
+
+    const esVegano = restricciones.includes('vegano');
+    const esVegetariano = restricciones.includes('vegetariano');
+    const esCeliaco = restricciones.includes('celiaco');
+    const sinAzucar = restricciones.includes('sinAzucar');
+
+    // Desayuno
+    if (esVegano) {
+        menuMiercoles += `<li>Desayuno: Batido de espinacas y proteína vegana <span onclick="toggleDetalles('detallesDesayunoMiercoles')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (esVegetariano) {
+        menuMiercoles += `<li>Desayuno: Avena con frutas frescas y leche de almendras <span onclick="toggleDetalles('detallesDesayunoMiercoles')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (esCeliaco) {
+        menuMiercoles += `<li>Desayuno: Yogur sin gluten con frutos secos <span onclick="toggleDetalles('detallesDesayunoMiercoles')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (sinAzucar) {
+        menuMiercoles += `<li>Desayuno: Avena sin azúcar con frutas <span onclick="toggleDetalles('detallesDesayunoMiercoles')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
     } else {
-        // Sin restricciones alimenticias
-        if (objetivo === 'perder') {
-            menuMiercoles += `<li>Desayuno: Avena con frutos rojos y leche de almendras. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-            menuMiercoles += `<li>Almuerzo: Pollo a la plancha con ensalada verde. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-            menuMiercoles += `<li>Cena: Pescado al horno con verduras. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-        } else if (objetivo === 'mantener') {
-            menuMiercoles += `<li>Desayuno: Yogur con avena y frutas frescas. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-            menuMiercoles += `<li>Almuerzo: Pollo con pasta integral y espinacas. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-            menuMiercoles += `<li>Cena: Ensalada de quinoa con salmón a la parrilla. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-        } else if (objetivo === 'ganar') {
-            menuMiercoles += `<li>Desayuno: Tostadas con mantequilla de maní y plátano. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-            menuMiercoles += `<li>Almuerzo: Pollo a la parrilla con arroz integral. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-            menuMiercoles += `<li>Cena: Carne a la parrilla con verduras. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-        }
+        menuMiercoles += `<li>Desayuno: Avena con frutas y batido de proteínas <span onclick="toggleDetalles('detallesDesayunoMiercoles')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
     }
+
+    menuMiercoles += `<div id="detallesDesayunoMiercoles" style="display:none;">
+        <p>Ingredientes: Avena (50g), Frutas (100g), Batido de proteínas (30g).</p>
+        <p>Calorías: ${Math.round(carbohidratosDesayuno * 4 + proteinasDesayuno * 4 + grasasDesayuno * 9)} kcal, Proteínas: ${Math.round(proteinasDesayuno)}g, Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g</p>
+    </div>`;
+
+    // Almuerzo
+    let opcionProteina = actividad === 'funcional' ? 'Quinoa' : 'Pollo';
+    if (esVegano) opcionProteina = 'Quinoa';
+    if (esVegetariano) opcionProteina = 'Huevos';
+
+    menuMiercoles += `<li>Almuerzo: ${opcionProteina} con ensalada de espinacas y garbanzos <span onclick="toggleDetalles('detallesAlmuerzoMiercoles')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    menuMiercoles += `<div id="detallesAlmuerzoMiercoles" style="display:none;">
+        <p>Ingredientes: ${opcionProteina} (200g), Espinacas (100g), Garbanzos (50g).</p>
+        <p>Calorías: ${Math.round(carbohidratosAlmuerzo * 4 + proteinasAlmuerzo * 4 + grasasAlmuerzo * 9)} kcal, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g</p>
+    </div>`;
+
+    // Cena
+    if (esCeliaco) {
+        menuMiercoles += `<li>Cena: Salmón a la parrilla con ensalada sin gluten <span onclick="toggleDetalles('detallesCenaMiercoles')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (sinAzucar) {
+        menuMiercoles += `<li>Cena: Pescado con ensalada verde sin aderezos azucarados <span onclick="toggleDetalles('detallesCenaMiercoles')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else {
+        menuMiercoles += `<li>Cena: Pescado al horno con ensalada <span onclick="toggleDetalles('detallesCenaMiercoles')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    }
+
+    menuMiercoles += `<div id="detallesCenaMiercoles" style="display:none;">
+        <p>Ingredientes: Pescado (150g), Ensalada (200g).</p>
+        <p>Calorías: ${Math.round(carbohidratosCena * 4 + proteinasCena * 4 + grasasCena * 9)} kcal, Proteínas: ${Math.round(proteinasCena)}g, Carbohidratos: ${Math.round(carbohidratosCena)}g, Grasas: ${Math.round(grasasCena)}g</p>
+    </div>`;
+
     menuMiercoles += '</ul>';
     return menuMiercoles;
 }
 
-
-function generarMenuDiaJueves(carbohidratosDesayuno, proteinasDesayuno, grasasDesayuno, carbohidratosAlmuerzo, proteinasAlmuerzo, grasasAlmuerzo, carbohidratosCena, proteinasCena, grasasCena, restricciones, objetivo) {
+// Función para el jueves
+function generarMenuDiaJueves(carbohidratosDesayuno, proteinasDesayuno, grasasDesayuno, carbohidratosAlmuerzo, proteinasAlmuerzo, grasasAlmuerzo, carbohidratosCena, proteinasCena, grasasCena, restricciones, sexo, actividad) {
     let menuJueves = '<h3>Menú del jueves:</h3><ul>';
-    if (restricciones.includes('vegano')) {
-        menuJueves += `<li>Desayuno: Tostadas integrales con aguacate y batido de proteínas veganas. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuJueves += `<li>Almuerzo: Ensalada de garbanzos con espinacas y aguacate. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuJueves += `<li>Cena: Hamburguesa de lentejas con ensalada verde. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-    } else if (restricciones.includes('vegetariano')) {
-        menuJueves += `<li>Desayuno: Avena con frutos secos y yogur. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuJueves += `<li>Almuerzo: Tortilla de espinacas con ensalada de quinoa. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuJueves += `<li>Cena: Pimientos rellenos de arroz integral. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-    } else if (restricciones.includes('celiaco')) {
-        menuJueves += `<li>Desayuno: Yogur sin gluten con avena libre de gluten y frutos rojos. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuJueves += `<li>Almuerzo: Pollo a la plancha con ensalada de espinacas. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuJueves += `<li>Cena: Pescado con vegetales sin gluten. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-    } else if (restricciones.includes('sinAzucar')) {
-        menuJueves += `<li>Desayuno: Tostadas sin azúcar con aguacate y huevo. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuJueves += `<li>Almuerzo: Pollo a la plancha con ensalada verde. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuJueves += `<li>Cena: Pescado al horno con espárragos. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
+
+    const esVegano = restricciones.includes('vegano');
+    const esVegetariano = restricciones.includes('vegetariano');
+    const esCeliaco = restricciones.includes('celiaco');
+    const sinAzucar = restricciones.includes('sinAzucar');
+
+    // Desayuno
+    if (esVegano) {
+        menuJueves += `<li>Desayuno: Tostadas con aguacate y batido de proteínas veganas <span onclick="toggleDetalles('detallesDesayunoJueves')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (esVegetariano) {
+        menuJueves += `<li>Desayuno: Avena con frutas frescas y nueces <span onclick="toggleDetalles('detallesDesayunoJueves')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (esCeliaco) {
+        menuJueves += `<li>Desayuno: Yogur sin gluten con frutos secos <span onclick="toggleDetalles('detallesDesayunoJueves')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (sinAzucar) {
+        menuJueves += `<li>Desayuno: Avena sin azúcar con frutas <span onclick="toggleDetalles('detallesDesayunoJueves')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
     } else {
-        if (objetivo === 'perder') {
-            menuJueves += `<li>Desayuno: Avena con frutos rojos y leche de almendras. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-            menuJueves += `<li>Almuerzo: Pollo a la plancha con ensalada verde. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-            menuJueves += `<li>Cena: Pescado al horno con verduras al vapor. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-        } else if (objetivo === 'mantener') {
-            menuJueves += `<li>Desayuno: Yogur con avena y frutas frescas. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-            menuJueves += `<li>Almuerzo: Pollo con pasta integral y espinacas. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-            menuJueves += `<li>Cena: Ensalada de quinoa con salmón a la parrilla. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-        } else if (objetivo === 'ganar') {
-            menuJueves += `<li>Desayuno: Tostadas con mantequilla de maní y plátano. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-            menuJueves += `<li>Almuerzo: Pollo con arroz integral y ensalada verde. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-            menuJueves += `<li>Cena: Carne a la parrilla con arroz integral. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-        }
+        menuJueves += `<li>Desayuno: Avena con frutas y batido de proteínas <span onclick="toggleDetalles('detallesDesayunoJueves')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
     }
+
+    menuJueves += `<div id="detallesDesayunoJueves" style="display:none;">
+        <p>Ingredientes: Avena (50g), Frutas (100g), Batido de proteínas (30g).</p>
+        <p>Calorías: ${Math.round(carbohidratosDesayuno * 4 + proteinasDesayuno * 4 + grasasDesayuno * 9)} kcal, Proteínas: ${Math.round(proteinasDesayuno)}g, Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g</p>
+    </div>`;
+
+    // Almuerzo
+    let opcionProteina = actividad === 'musculacion' ? 'Pollo' : 'Tofu';
+    if (esVegano) opcionProteina = 'Tofu';
+    if (esVegetariano) opcionProteina = 'Huevos';
+
+    menuJueves += `<li>Almuerzo: ${opcionProteina} a la parrilla con ensalada de quinoa y espinacas <span onclick="toggleDetalles('detallesAlmuerzoJueves')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    menuJueves += `<div id="detallesAlmuerzoJueves" style="display:none;">
+        <p>Ingredientes: ${opcionProteina} (200g), Quinoa (100g), Espinacas (50g).</p>
+        <p>Calorías: ${Math.round(carbohidratosAlmuerzo * 4 + proteinasAlmuerzo * 4 + grasasAlmuerzo * 9)} kcal, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g</p>
+    </div>`;
+
+    // Cena
+    if (esCeliaco) {
+        menuJueves += `<li>Cena: Pescado al horno con ensalada sin gluten <span onclick="toggleDetalles('detallesCenaJueves')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (sinAzucar) {
+        menuJueves += `<li>Cena: Pescado al horno con ensalada sin aderezos azucarados <span onclick="toggleDetalles('detallesCenaJueves')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else {
+        menuJueves += `<li>Cena: Pescado al horno con ensalada <span onclick="toggleDetalles('detallesCenaJueves')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    }
+
+    menuJueves += `<div id="detallesCenaJueves" style="display:none;">
+        <p>Ingredientes: Pescado (150g), Ensalada (200g).</p>
+        <p>Calorías: ${Math.round(carbohidratosCena * 4 + proteinasCena * 4 + grasasCena * 9)} kcal, Proteínas: ${Math.round(proteinasCena)}g, Carbohidratos: ${Math.round(carbohidratosCena)}g, Grasas: ${Math.round(grasasCena)}g</p>
+    </div>`;
+
     menuJueves += '</ul>';
     return menuJueves;
 }
 
-
-function generarMenuDiaViernes(carbohidratosDesayuno, proteinasDesayuno, grasasDesayuno, carbohidratosAlmuerzo, proteinasAlmuerzo, grasasAlmuerzo, carbohidratosCena, proteinasCena, grasasCena, restricciones, objetivo) {
+// Función para el viernes
+function generarMenuDiaViernes(carbohidratosDesayuno, proteinasDesayuno, grasasDesayuno, carbohidratosAlmuerzo, proteinasAlmuerzo, grasasAlmuerzo, carbohidratosCena, proteinasCena, grasasCena, restricciones, sexo, actividad) {
     let menuViernes = '<h3>Menú del viernes:</h3><ul>';
-    if (restricciones.includes('vegano')) {
-        menuViernes += `<li>Desayuno: Avena con leche de almendras y frutas frescas. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuViernes += `<li>Almuerzo: Ensalada de quinoa con tofu y espinacas. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuViernes += `<li>Cena: Hamburguesa vegana con batata al horno. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-    } else if (restricciones.includes('vegetariano')) {
-        menuViernes += `<li>Desayuno: Yogur con frutas frescas y nueces. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuViernes += `<li>Almuerzo: Tortilla de espinacas con ensalada de arroz integral. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuViernes += `<li>Cena: Ensalada de garbanzos con espinacas. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-    } else if (restricciones.includes('celiaco')) {
-        menuViernes += `<li>Desayuno: Tostadas sin gluten con aguacate y tomate. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuViernes += `<li>Almuerzo: Pollo con ensalada de espinacas. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuViernes += `<li>Cena: Pescado al horno con verduras al vapor. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-    } else if (restricciones.includes('sinAzucar')) {
-        menuViernes += `<li>Desayuno: Avena sin azúcar con frutas frescas. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuViernes += `<li>Almuerzo: Pollo con ensalada de hojas verdes sin aderezo azucarado. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuViernes += `<li>Cena: Pescado con vegetales al vapor. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
+
+    const esVegano = restricciones.includes('vegano');
+    const esVegetariano = restricciones.includes('vegetariano');
+    const esCeliaco = restricciones.includes('celiaco');
+    const sinAzucar = restricciones.includes('sinAzucar');
+
+    // Desayuno
+    if (esVegano) {
+        menuViernes += `<li>Desayuno: Batido de proteínas veganas con avena y plátano <span onclick="toggleDetalles('detallesDesayunoViernes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (esVegetariano) {
+        menuViernes += `<li>Desayuno: Yogur con frutas frescas y nueces <span onclick="toggleDetalles('detallesDesayunoViernes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (esCeliaco) {
+        menuViernes += `<li>Desayuno: Tostadas sin gluten con aguacate <span onclick="toggleDetalles('detallesDesayunoViernes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (sinAzucar) {
+        menuViernes += `<li>Desayuno: Avena sin azúcar con frutos rojos <span onclick="toggleDetalles('detallesDesayunoViernes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
     } else {
-        if (objetivo === 'perder') {
-            menuViernes += `<li>Desayuno: Avena con frutos rojos y leche de almendras. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-            menuViernes += `<li>Almuerzo: Pollo a la plancha con ensalada verde. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-            menuViernes += `<li>Cena: Pescado al horno con verduras al vapor. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-        } else if (objetivo === 'mantener') {
-            menuViernes += `<li>Desayuno: Yogur con avena y frutas frescas. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-            menuViernes += `<li>Almuerzo: Pollo con pasta integral y espinacas. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-            menuViernes += `<li>Cena: Ensalada de quinoa con salmón a la parrilla. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-        } else if (objetivo === 'ganar') {
-            menuViernes += `<li>Desayuno: Tostadas con mantequilla de maní y plátano. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-            menuViernes += `<li>Almuerzo: Pollo con arroz integral y ensalada verde. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-            menuViernes += `<li>Cena: Carne a la parrilla con arroz integral. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-        }
+        menuViernes += `<li>Desayuno: Yogur con avena y frutas frescas <span onclick="toggleDetalles('detallesDesayunoViernes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
     }
+
+    menuViernes += `<div id="detallesDesayunoViernes" style="display:none;">
+        <p>Ingredientes: Yogur (200g), Avena (50g), Frutas frescas (100g).</p>
+        <p>Calorías: ${Math.round(carbohidratosDesayuno * 4 + proteinasDesayuno * 4 + grasasDesayuno * 9)} kcal, Proteínas: ${Math.round(proteinasDesayuno)}g, Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g</p>
+    </div>`;
+
+    // Almuerzo
+    let opcionProteina = actividad === 'crossfit' ? 'Tofu' : 'Pollo';
+    if (esVegano) opcionProteina = 'Tofu';
+    if (esVegetariano) opcionProteina = 'Huevos';
+
+    menuViernes += `<li>Almuerzo: ${opcionProteina} con ensalada de espinacas y quinoa <span onclick="toggleDetalles('detallesAlmuerzoViernes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    menuViernes += `<div id="detallesAlmuerzoViernes" style="display:none;">
+        <p>Ingredientes: ${opcionProteina} (200g), Quinoa (100g), Espinacas (50g).</p>
+        <p>Calorías: ${Math.round(carbohidratosAlmuerzo * 4 + proteinasAlmuerzo * 4 + grasasAlmuerzo * 9)} kcal, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g</p>
+    </div>`;
+
+    // Cena
+    if (esCeliaco) {
+        menuViernes += `<li>Cena: Pescado al horno con ensalada sin gluten <span onclick="toggleDetalles('detallesCenaViernes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (sinAzucar) {
+        menuViernes += `<li>Cena: Pescado al horno con ensalada sin aderezos azucarados <span onclick="toggleDetalles('detallesCenaViernes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else {
+        menuViernes += `<li>Cena: Pescado al horno con ensalada <span onclick="toggleDetalles('detallesCenaViernes')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    }
+
+    menuViernes += `<div id="detallesCenaViernes" style="display:none;">
+        <p>Ingredientes: Pescado (150g), Ensalada (200g).</p>
+        <p>Calorías: ${Math.round(carbohidratosCena * 4 + proteinasCena * 4 + grasasCena * 9)} kcal, Proteínas: ${Math.round(proteinasCena)}g, Carbohidratos: ${Math.round(carbohidratosCena)}g, Grasas: ${Math.round(grasasCena)}g</p>
+    </div>`;
+
     menuViernes += '</ul>';
     return menuViernes;
 }
 
-
-function generarMenuDiaSabado(carbohidratosDesayuno, proteinasDesayuno, grasasDesayuno, carbohidratosAlmuerzo, proteinasAlmuerzo, grasasAlmuerzo, carbohidratosCena, proteinasCena, grasasCena, restricciones, objetivo) {
+// Función para el sábado
+function generarMenuDiaSabado(carbohidratosDesayuno, proteinasDesayuno, grasasDesayuno, carbohidratosAlmuerzo, proteinasAlmuerzo, grasasAlmuerzo, carbohidratosCena, proteinasCena, grasasCena, restricciones, sexo, actividad) {
     let menuSabado = '<h3>Menú del sábado:</h3><ul>';
-    if (restricciones.includes('vegano')) {
-        menuSabado += `<li>Desayuno: Batido de proteínas veganas con avena. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuSabado += `<li>Almuerzo: Ensalada de lentejas con quinoa. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuSabado += `<li>Cena: Hamburguesa vegana con ensalada de espinacas. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-    } else if (restricciones.includes('vegetariano')) {
-        menuSabado += `<li>Desayuno: Yogur con avena y frutas frescas. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuSabado += `<li>Almuerzo: Tortilla de espinacas con ensalada de tomate. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuSabado += `<li>Cena: Pimientos rellenos de arroz integral. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-    } else if (restricciones.includes('celiaco')) {
-        menuSabado += `<li>Desayuno: Tostadas sin gluten con aguacate. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuSabado += `<li>Almuerzo: Pollo con ensalada de espinacas y quinoa. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuSabado += `<li>Cena: Pescado al horno con vegetales sin gluten. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-    } else if (restricciones.includes('sinAzucar')) {
-        menuSabado += `<li>Desayuno: Avena sin azúcar con frutas frescas. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuSabado += `<li>Almuerzo: Pollo con ensalada de hojas verdes sin aderezo. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuSabado += `<li>Cena: Pescado al horno con verduras al vapor. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
+
+    const esVegano = restricciones.includes('vegano');
+    const esVegetariano = restricciones.includes('vegetariano');
+    const esCeliaco = restricciones.includes('celiaco');
+    const sinAzucar = restricciones.includes('sinAzucar');
+
+    // Desayuno
+    if (esVegano) {
+        menuSabado += `<li>Desayuno: Batido de proteínas veganas con avena y plátano <span onclick="toggleDetalles('detallesDesayunoSabado')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (esVegetariano) {
+        menuSabado += `<li>Desayuno: Yogur con frutas frescas y nueces <span onclick="toggleDetalles('detallesDesayunoSabado')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (esCeliaco) {
+        menuSabado += `<li>Desayuno: Tostadas sin gluten con aguacate <span onclick="toggleDetalles('detallesDesayunoSabado')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (sinAzucar) {
+        menuSabado += `<li>Desayuno: Avena sin azúcar con frutos rojos <span onclick="toggleDetalles('detallesDesayunoSabado')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
     } else {
-        if (objetivo === 'perder') {
-            menuSabado += `<li>Desayuno: Avena con frutos rojos y leche de almendras. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-            menuSabado += `<li>Almuerzo: Pollo a la plancha con ensalada verde. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-            menuSabado += `<li>Cena: Pescado al horno con verduras al vapor. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-        } else if (objetivo === 'mantener') {
-            menuSabado += `<li>Desayuno: Yogur con avena y frutas frescas. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-            menuSabado += `<li>Almuerzo: Pollo con pasta integral y espinacas. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-            menuSabado += `<li>Cena: Ensalada de quinoa con salmón a la parrilla. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-        } else if (objetivo === 'ganar') {
-            menuSabado += `<li>Desayuno: Tostadas con mantequilla de maní y plátano. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-            menuSabado += `<li>Almuerzo: Pollo con arroz integral y ensalada verde. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-            menuSabado += `<li>Cena: Carne a la parrilla con arroz integral. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-        }
+        menuSabado += `<li>Desayuno: Yogur con avena y frutas frescas <span onclick="toggleDetalles('detallesDesayunoSabado')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
     }
+
+    menuSabado += `<div id="detallesDesayunoSabado" style="display:none;">
+        <p>Ingredientes: Yogur (200g), Avena (50g), Frutas frescas (100g).</p>
+        <p>Calorías: ${Math.round(carbohidratosDesayuno * 4 + proteinasDesayuno * 4 + grasasDesayuno * 9)} kcal, Proteínas: ${Math.round(proteinasDesayuno)}g, Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g</p>
+    </div>`;
+
+    // Almuerzo
+    let opcionProteina = actividad === 'musculacion' ? 'Pollo' : 'Tofu';
+    if (esVegano) opcionProteina = 'Tofu';
+    if (esVegetariano) opcionProteina = 'Huevos';
+
+    menuSabado += `<li>Almuerzo: ${opcionProteina} a la parrilla con ensalada de espinacas y quinoa <span onclick="toggleDetalles('detallesAlmuerzoSabado')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    menuSabado += `<div id="detallesAlmuerzoSabado" style="display:none;">
+        <p>Ingredientes: ${opcionProteina} (200g), Quinoa (100g), Espinacas (50g).</p>
+        <p>Calorías: ${Math.round(carbohidratosAlmuerzo * 4 + proteinasAlmuerzo * 4 + grasasAlmuerzo * 9)} kcal, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g</p>
+    </div>`;
+
+    // Cena
+    if (esCeliaco) {
+        menuSabado += `<li>Cena: Pescado al horno con ensalada sin gluten <span onclick="toggleDetalles('detallesCenaSabado')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (sinAzucar) {
+        menuSabado += `<li>Cena: Pescado al horno con ensalada sin aderezos azucarados <span onclick="toggleDetalles('detallesCenaSabado')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else {
+        menuSabado += `<li>Cena: Pescado al horno con ensalada <span onclick="toggleDetalles('detallesCenaSabado')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    }
+
+    menuSabado += `<div id="detallesCenaSabado" style="display:none;">
+        <p>Ingredientes: Pescado (150g), Ensalada (200g).</p>
+        <p>Calorías: ${Math.round(carbohidratosCena * 4 + proteinasCena * 4 + grasasCena * 9)} kcal, Proteínas: ${Math.round(proteinasCena)}g, Carbohidratos: ${Math.round(carbohidratosCena)}g, Grasas: ${Math.round(grasasCena)}g</p>
+    </div>`;
+
     menuSabado += '</ul>';
     return menuSabado;
 }
 
-
-function generarMenuDiaDomingo(carbohidratosDesayuno, proteinasDesayuno, grasasDesayuno, carbohidratosAlmuerzo, proteinasAlmuerzo, grasasAlmuerzo, carbohidratosCena, proteinasCena, grasasCena, restricciones, objetivo) {
+// Función para el domingo
+function generarMenuDiaDomingo(carbohidratosDesayuno, proteinasDesayuno, grasasDesayuno, carbohidratosAlmuerzo, proteinasAlmuerzo, grasasAlmuerzo, carbohidratosCena, proteinasCena, grasasCena, restricciones, sexo, actividad) {
     let menuDomingo = '<h3>Menú del domingo:</h3><ul>';
-    if (restricciones.includes('vegano')) {
-        menuDomingo += `<li>Desayuno: Tostadas con aguacate y batido de proteínas veganas. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuDomingo += `<li>Almuerzo: Ensalada de lentejas con espinacas y aguacate. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuDomingo += `<li>Cena: Hamburguesa de lentejas con quinoa. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-    } else if (restricciones.includes('vegetariano')) {
-        menuDomingo += `<li>Desayuno: Avena con leche de almendras y frutos secos. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuDomingo += `<li>Almuerzo: Tortilla de espinacas con ensalada de quinoa. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuDomingo += `<li>Cena: Pimientos rellenos de arroz integral. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-    } else if (restricciones.includes('celiaco')) {
-        menuDomingo += `<li>Desayuno: Tostadas sin gluten con aguacate. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuDomingo += `<li>Almuerzo: Pollo a la plancha con ensalada verde y quinoa. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuDomingo += `<li>Cena: Pescado al horno con vegetales sin gluten. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-    } else if (restricciones.includes('sinAzucar')) {
-        menuDomingo += `<li>Desayuno: Avena sin azúcar con frutas frescas. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-        menuDomingo += `<li>Almuerzo: Pollo con ensalada de hojas verdes sin aderezo azucarado. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-        menuDomingo += `<li>Cena: Pescado al horno con verduras al vapor. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
+
+    const esVegano = restricciones.includes('vegano');
+    const esVegetariano = restricciones.includes('vegetariano');
+    const esCeliaco = restricciones.includes('celiaco');
+    const sinAzucar = restricciones.includes('sinAzucar');
+
+    // Desayuno
+    if (esVegano) {
+        menuDomingo += `<li>Desayuno: Tostadas integrales con aguacate y batido de proteínas veganas <span onclick="toggleDetalles('detallesDesayunoDomingo')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (esVegetariano) {
+        menuDomingo += `<li>Desayuno: Avena con frutas frescas y nueces <span onclick="toggleDetalles('detallesDesayunoDomingo')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (esCeliaco) {
+        menuDomingo += `<li>Desayuno: Yogur sin gluten con frutos secos <span onclick="toggleDetalles('detallesDesayunoDomingo')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (sinAzucar) {
+        menuDomingo += `<li>Desayuno: Avena sin azúcar con frutas <span onclick="toggleDetalles('detallesDesayunoDomingo')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
     } else {
-        if (objetivo === 'perder') {
-            menuDomingo += `<li>Desayuno: Avena con frutos rojos y leche de almendras. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-            menuDomingo += `<li>Almuerzo: Pollo a la plancha con ensalada verde. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-            menuDomingo += `<li>Cena: Pescado al horno con verduras al vapor. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-        } else if (objetivo === 'mantener') {
-            menuDomingo += `<li>Desayuno: Yogur con avena y frutas frescas. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-            menuDomingo += `<li>Almuerzo: Pollo con pasta integral y espinacas. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-            menuDomingo += `<li>Cena: Ensalada de quinoa con salmón a la parrilla. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-        } else if (objetivo === 'ganar') {
-            menuDomingo += `<li>Desayuno: Tostadas con mantequilla de maní y plátano. (Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Proteínas: ${Math.round(proteinasDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g)</li>`;
-            menuDomingo += `<li>Almuerzo: Pollo con arroz integral y ensalada verde. (Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g)</li>`;
-            menuDomingo += `<li>Cena: Carne a la parrilla con arroz integral. (Carbohidratos: ${Math.round(carbohidratosCena)}g, Proteínas: ${Math.round(proteinasCena)}g, Grasas: ${Math.round(grasasCena)}g)</li>`;
-        }
+        menuDomingo += `<li>Desayuno: Avena con frutas y batido de proteínas <span onclick="toggleDetalles('detallesDesayunoDomingo')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
     }
+
+    menuDomingo += `<div id="detallesDesayunoDomingo" style="display:none;">
+        <p>Ingredientes: Avena (50g), Frutas (100g), Batido de proteínas (30g).</p>
+        <p>Calorías: ${Math.round(carbohidratosDesayuno * 4 + proteinasDesayuno * 4 + grasasDesayuno * 9)} kcal, Proteínas: ${Math.round(proteinasDesayuno)}g, Carbohidratos: ${Math.round(carbohidratosDesayuno)}g, Grasas: ${Math.round(grasasDesayuno)}g</p>
+    </div>`;
+
+    // Almuerzo
+    let opcionProteina = actividad === 'crossfit' ? 'Tofu' : 'Pollo';
+    if (esVegano) opcionProteina = 'Tofu';
+    if (esVegetariano) opcionProteina = 'Huevos';
+
+    menuDomingo += `<li>Almuerzo: ${opcionProteina} a la plancha con ensalada de quinoa y espinacas <span onclick="toggleDetalles('detallesAlmuerzoDomingo')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    menuDomingo += `<div id="detallesAlmuerzoDomingo" style="display:none;">
+        <p>Ingredientes: ${opcionProteina} (200g), Quinoa (100g), Espinacas (50g).</p>
+        <p>Calorías: ${Math.round(carbohidratosAlmuerzo * 4 + proteinasAlmuerzo * 4 + grasasAlmuerzo * 9)} kcal, Proteínas: ${Math.round(proteinasAlmuerzo)}g, Carbohidratos: ${Math.round(carbohidratosAlmuerzo)}g, Grasas: ${Math.round(grasasAlmuerzo)}g</p>
+    </div>`;
+
+    // Cena
+    if (esCeliaco) {
+        menuDomingo += `<li>Cena: Salmón a la parrilla con ensalada sin gluten <span onclick="toggleDetalles('detallesCenaDomingo')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else if (sinAzucar) {
+        menuDomingo += `<li>Cena: Pescado al horno con ensalada sin aderezos azucarados <span onclick="toggleDetalles('detallesCenaDomingo')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    } else {
+        menuDomingo += `<li>Cena: Pescado al horno con ensalada <span onclick="toggleDetalles('detallesCenaDomingo')" style="cursor: pointer; color: lime;">Ver detalles ⯆</span></li>`;
+    }
+
+    menuDomingo += `<div id="detallesCenaDomingo" style="display:none;">
+        <p>Ingredientes: Pescado (150g), Ensalada (200g).</p>
+        <p>Calorías: ${Math.round(carbohidratosCena * 4 + proteinasCena * 4 + grasasCena * 9)} kcal, Proteínas: ${Math.round(proteinasCena)}g, Carbohidratos: ${Math.round(carbohidratosCena)}g, Grasas: ${Math.round(grasasCena)}g</p>
+    </div>`;
+
     menuDomingo += '</ul>';
     return menuDomingo;
-}
-
